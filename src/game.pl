@@ -70,3 +70,39 @@ initial_state([Rows, Cols, Mode], GameState) :-
         Cols           % Board columns
     ).
 
+state(menu).
+state(setup).
+state(player1_turn).
+state(player2_turn).
+state(game_over).
+
+% Setup state
+run_state(setup, GameState) :-
+    setup_game(GameState),
+    run_state(player1_turn, GameState).
+
+run_state(player1_turn, GameState) :-
+    display_game(GameState),
+    get_player_move(1, Move),
+    make_move(GameState, Move, NewState),
+    (game_over(NewState) -> 
+     run_state(game_over, NewState);
+     run_state(player2_turn, NewState)).
+
+run_state(player2_turn, GameState) :-
+    display_game(GameState),
+    get_player_move(2, Move),
+    make_move(GameState, Move, NewState),
+    (game_over(NewState) -> 
+     run_state(game_over, NewState);
+     run_state(player1_turn, NewState)).
+
+run_state(game_over, GameState) :-
+    display_game(GameState),
+    display_winner(GameState),
+    run_state(menu, []).
+
+
+
+game_loop :-
+    setup_game.

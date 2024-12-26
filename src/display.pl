@@ -3,9 +3,6 @@ display_game(game_state(Turn, Score1, Score2, Board1, Rows1, Cols1, Board2, Rows
     format('Turn: Player ~w     Mode: ~w~n', [Turn, Mode]),
     format('Scores - P1: ~w  P2: ~w~n~n', [Score1, Score2]),
     
-    % Display player headers
-    write('Player 1:                    Player 2:'), nl,
-    
     % Print column numbers for both boards
     write('  '),
     print_cols_numbers(Cols1),
@@ -35,3 +32,83 @@ print_row([]).
 print_row([Cell|Rest]) :-
     (Cell = empty -> write(' . ') ; format(' ~w ', [Cell])),
     print_row(Rest).
+
+display_state_of_game(game_state(Turn, Score1, Score2, Board1, Rows1, Cols1, Board2, Rows2, Cols2, Mode, Rows, Cols)):-
+    nl,
+    write('----- Game State -----'), nl,
+    display_game(game_state(Turn, Score1, Score2, Board1, Rows1, Cols1, Board2, Rows2, Cols2, Mode, Rows, Cols)),
+    write('-------------------'), nl,
+    
+    % Display scrambled configurations
+    write('Scrambled Configurations:'), nl,
+    write('Player 1:'), nl,
+    format('  Rows: ~w~n', [Rows1]),
+    format('  Cols: ~w~n', [Cols1]),
+    write('Player 2:'), nl,
+    format('  Rows: ~w~n', [Rows2]),
+    format('  Cols: ~w~n', [Cols2]),
+    nl,
+    
+    % Game info
+    format('Game Mode: ~w~n', [Mode]),
+    format('Board Size: ~w x ~w~n', [Rows, Cols]),
+    nl.
+
+
+% Validation predicates
+validate_rows(Rows) :-
+    Rows >= 4,
+    Rows =< 10.
+
+validate_cols(Cols) :-
+    Cols >= 4,
+    Cols =< 10.
+
+validate_mode(Mode) :-
+    Mode >= 1,
+    Mode =< 3.
+
+% Get valid rows - success case
+get_valid_rows(Rows) :-
+    write('Enter number of rows (4-10): '),
+    read(Rows),
+    validate_rows(Rows).
+
+% Get valid rows - failure case
+get_valid_rows(Rows) :-
+    write('Invalid number of rows! Must be between 4 and 10.'), nl,
+    get_valid_rows(Rows).
+
+% Get valid columns - success case
+get_valid_cols(Cols) :-
+    write('Enter number of columns (4-10): '),
+    read(Cols),
+    validate_cols(Cols).
+
+% Get valid columns - failure case
+get_valid_cols(Cols) :-
+    write('Invalid number of columns! Must be between 4 and 10.'), nl,
+    get_valid_cols(Cols).
+
+% Get valid mode - success case
+get_valid_mode(Mode) :-
+    write('Select game mode:'), nl,
+    write('1. Player vs Player'), nl,
+    write('2. Player vs Bot (Easy)'), nl,
+    write('3. Player vs Bot (Medium)'), nl,
+    read(Mode),
+    validate_mode(Mode).
+
+% Get valid mode - failure case
+get_valid_mode(Mode) :-
+    write('Invalid mode! Must be 1, 2 or 3.'), nl,
+    get_valid_mode(Mode).
+
+setup_game(GameState) :-
+    write('Start Game'),
+    nl,
+    get_valid_rows(Rows),
+    get_valid_cols(Cols),
+    get_valid_mode(Mode),
+    initial_state([Rows, Cols, Mode], GameState),
+    display_game(GameState).

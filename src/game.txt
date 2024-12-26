@@ -1,0 +1,90 @@
+Game Steup
+
+Draw as many 8x8 grids as there are players (2 players), labeled along the side with letters and numbers with a different random order for each grid.
+Each player is assigned a grid and write their name above.
+  
+Player 1:  
+___3_5_8_6_1_4_7_2_  
+F |O| | |X|O|X|X| |
+E |O|X|X|O|X| | |X| 
+G |X|X|O| | | | |O|
+B | |O|O|X| |X| | |
+C |X|O|O| |X| | | |
+A | | |X| |O|O| | |
+D |O| | |X| | | | |
+H | |O|O| | | | | |
+
+Player 2:  
+___7_3_5_8_1_2_6_4_  
+B | | |O|O| | |X|X|
+E | |O|X|X|X|X|O| | 
+D | |O| | | | |X| |
+G | |X|X|O| |O| | |
+A | | | |X|O| | |O|
+H | | |O|O| | | | |
+C | |X|O|O|X| | | |
+F |x|O| | |O| |X|X|
+
+Empty one:  
+___3_5_8_6_1_4_7_2_  
+F | | | | | | | | |
+E | | | | | | | | | 
+G | | | | | | | | |
+B | | | | | | | | |
+C | | | | | | | | |
+A | | | | | | | | |
+D | | | | | | | | |
+H | | | | | | | | |
+
+The play:
+Start the player one.
+They pick two empty spaces in their grid and put an O and an X inside while saying aloud their coordinates.
+Each player must draw these symbols in their grid at the same coordinates.
+The action moves to the next player clockwise.
+The game goes on until every grid is complete.
+
+Scoring 
+Every square or line gives 1 point.
+A symbol can be used in several lines and/or squares.
+
+The player with the lowest score wins. 
+
+A line is a sequence of four of the same symbol in the vertical/horizontal or diagonal.
+A square is when four symbols create a square in the grid (two above and two bellow).
+
+
+Implementação
+
+State = state(
+    4,
+    player_info(0, 0),
+    player_info(0, 0),
+    [
+        [[., x, ., ., ., x], 
+         [., ., ., o, ., .], 
+         [o, o, o, ., ., .], 
+         [., ., ., ., ., .], 
+         [., ., ., ., x, .], 
+         [x, ., ., ., ., .]]
+    ],
+    % Scrambled rows
+    ['f', 'd', 'a', 'b', 'c', 'e'],
+    % Scrambled columns
+    [6, 5, 2, 4, 3, 1]
+).
+
+% Call to display the game state
+?- display_game(State).
+
+
+Turn: 4
+Player 1: Lines = 0, Squares = 0
+Player 2: Lines = 0, Squares = 0
+
+   1  2  3  4  5  6 || 6  5  2  4  3  1
+a  .  X  .  .  .  X || .  .  .  .  .  X  f
+b  .  .  .  O  .  . || .  .  .  .  .  .  d
+c  O  O  O  .  .  . || X  .  X  .  .  .  a
+d  .  .  .  .  .  . || .  .  .  O  .  .  b
+e  .  .  .  .  X  . || .  .  O  .  O  O  c
+f  X  .  .  .  .  . || .  X  .  .  .  .  e

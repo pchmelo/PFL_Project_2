@@ -112,3 +112,15 @@ setup_game(GameState) :-
     get_valid_mode(Mode),
     initial_state([Rows, Cols, Mode], GameState),
     display_game(GameState).
+
+% Display a list of coordinates
+display_coords(Coords) :-
+    write('Coordinates: '), nl,
+    display_formatted_coords(Coords).
+
+% Helper predicate to display formatted coordinates
+display_formatted_coords([]).
+display_formatted_coords([(Row, Col)|Rest]) :-
+    format('(~w, ~w)', [Row, Col]), nl,
+    display_formatted_coords(Rest).
+    

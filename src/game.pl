@@ -16,6 +16,7 @@
 :- use_module(library(random)).
 :- use_module(library(lists)).
 :- use_module(library(between)).
+:- use_module(library(ordsets)).
 
 :- consult('display.pl').
 
@@ -70,6 +71,20 @@ initial_state([Rows, Cols, Mode], GameState) :-
         Cols           % Board columns
     ).
 
+% Convert coordinates to letter-number format using row and column labels
+coord_to_letter_number((Row, Col), RowLetters, ColNumbers, (A, B)) :-
+    nth1(Row, RowLetters, A),
+    nth1(Col, ColNumbers, B).
+
+% Valid moves predicate
+valid_moves(game_state(_, _, _, Board1, RowLetters, ColNumbers, _, _, _, _, _, _), ListOfMoves) :-
+    find_empty_spaces(Board1, EmptySpaces1),
+    maplist(coord_to_letter_number_with_labels(RowLetters, ColNumbers), EmptySpaces1, ListOfMoves).
+
+% Helper predicate to pass row and column labels to coord_to_letter_number/4
+coord_to_letter_number_with_labels(RowLetters, ColNumbers, (Row, Col), (A, B)) :-
+    coord_to_letter_number((Row, Col), RowLetters, ColNumbers, (A, B)).
+
 state(menu).
 state(setup).
 state(player1_turn).
@@ -78,31 +93,11 @@ state(game_over).
 
 % Setup state
 run_state(setup, GameState) :-
-    setup_game(GameState),
-    run_state(player1_turn, GameState).
-
-run_state(player1_turn, GameState) :-
-    display_game(GameState),
-    get_player_move(1, Move),
-    make_move(GameState, Move, NewState),
-    (game_over(NewState) -> 
-     run_state(game_over, NewState);
-     run_state(player2_turn, NewState)).
-
-run_state(player2_turn, GameState) :-
-    display_game(GameState),
-    get_player_move(2, Move),
-    make_move(GameState, Move, NewState),
-    (game_over(NewState) -> 
-     run_state(game_over, NewState);
-     run_state(player1_turn, NewState)).
-
-run_state(game_over, GameState) :-
-    display_game(GameState),
-    display_winner(GameState),
-    run_state(menu, []).
-
-
+    setup_game(GameState).
+    %run_state(player1_turn, GameState).
 
 game_loop :-
-    setup_game.
+    run_state(setup, GameState),
+    valid_moves(GameState, ListOfMoves),
+    display_coords(ListOfMoves).
+

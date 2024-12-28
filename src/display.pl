@@ -1,4 +1,5 @@
 display_game(game_state(Turn, Score1, Score2, Board1, Rows1, Cols1, Board2, Rows2, Cols2, Mode, _, _)) :-
+    write('DISPLAY GAME'), nl,
     % Display scores and turn
     format('Turn: Player ~w     Mode: ~w~n', [Turn, Mode]),
     format('Scores - P1: ~w  P2: ~w~n~n', [Score1, Score2]),
@@ -105,11 +106,12 @@ get_valid_mode(Mode) :-
     get_valid_mode(Mode).
 
 setup_game(GameState) :-
-    write('Start Game'),
-    nl,
+    write('Start Game'),nl,
+    
     get_valid_rows(Rows),
     get_valid_cols(Cols),
     get_valid_mode(Mode),
+    
     initial_state([Rows, Cols, Mode], GameState),
     display_game(GameState).
 
@@ -124,3 +126,38 @@ display_formatted_coords([(Row, Col)|Rest]) :-
     format('(~w, ~w)', [Row, Col]), nl,
     display_formatted_coords(Rest).
     
+
+display_board(Board, RowLetters, ColNumbers) :-
+    nl,
+    write('  '),
+    display_col_numbers(ColNumbers),
+    nl,
+    display_rows(Board, RowLetters, 1).
+
+% Display column numbers
+display_col_numbers([]).
+display_col_numbers([Col|RestCols]) :-
+    format(' ~w', [Col]),
+    display_col_numbers(RestCols).
+
+% Display each row with row index
+display_rows([], _, _).
+display_rows([Row|RestRows], RowLetters, RowIndex) :-
+    nth1(RowIndex, RowLetters, RowLetter),
+    format('~w ', [RowLetter]),
+    display_row(Row),
+    nl,
+    NextRowIndex is RowIndex + 1,
+    display_rows(RestRows, RowLetters, NextRowIndex).
+
+% Display each cell in a row
+display_row([]).
+display_row([Cell|RestCells]) :-
+    display_cell(Cell),
+    display_row(RestCells).
+
+% Display a single cell
+display_cell(empty) :-
+    write('. ').
+display_cell(Cell) :-
+    format('~w ', [Cell]).

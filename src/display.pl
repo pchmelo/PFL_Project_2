@@ -161,3 +161,21 @@ display_cell(empty) :-
     write('. ').
 display_cell(Cell) :-
     format('~w ', [Cell]).
+
+% Validate if the row letter is within the possible range
+validate_row_letter(RowLetter, Rows, RowLetters) :-
+    char_code(RowLetter, RowCode),
+    char_code('A', ACode),
+    MaxRowCode is ACode + Rows - 1,
+    RowCode >= ACode,
+    RowCode =< MaxRowCode,
+    nth1(_, RowLetters, RowLetter).
+
+read_user_input(1, game_state(Turn, Player1Score, Player2Score, Board1, RowLetters1, ColNumbers1, Board2, RowLetters2, ColNumbers2, Mode, Rows, Cols), (A1, B1)) :-
+    write('Player 1\'s turn'), nl,
+    write('Choose the letter of the line to put the X: '), nl,
+    read(A1),
+    write('Choose the number of the column to put the X: '), nl,
+    read(B1),
+
+    format('A1: ~w, B1: ~w', [A1, B1]), nl.

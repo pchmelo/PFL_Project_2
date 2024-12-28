@@ -105,9 +105,10 @@ run_state(setup, GameState) :-
 
 game_loop :-
     run_state(setup, GameState),
-    move(GameState, (('A', 4), 'X'), NewGameState),
-
-    display_game(NewGameState).
+    
+    read_user_input(1, NewGameState, (A1, B1)),
+    move(GameState, ((A1, B1), 'X'), NewGameState),
+    display_game(NewGameState),
 
     write('FIMMMM'), nl.
 
@@ -146,3 +147,5 @@ move(game_state(Turn, Player1Score, Player2Score, Board1, RowLetters1, ColNumber
     update_board(Board1, Board2, (A1, B1), (A2, B2), Char, NewBoard1, NewBoard2),
     
     NewGameState = game_state(Turn, Player1Score, Player2Score, NewBoard1, RowLetters1, ColNumbers1, NewBoard2, RowLetters2, ColNumbers2, Mode, Rows, Cols).
+
+

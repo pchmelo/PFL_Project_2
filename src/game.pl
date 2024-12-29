@@ -168,7 +168,7 @@ replace_char_board_row([Head|Tail], Row, Actual_Index, Char, [Head|Res]) :-
     Next_Index is Actual_Index + 1,
     replace_char_board_row(Tail, Row, Next_Index, Char, Res).
 
-move(game_state(Turn, Player1Score, Player2Score, Board1, RowLetters1, ColNumbers1, Board2, RowLetters2, ColNumbers2, Mode, Rows, Cols), ((Row, Col), Char), NewGameState) :- 
+move(game_state(Turn, Player1Score, Player2Score, Board1, RowLetters1, ColNumbers1, Board2, RowLetters2, ColNumbers2, Mode, Rows, Cols), ((Row, Col), Char), game_state(Turn, Player1Score, Player2Score, NewBoard1, RowLetters1, ColNumbers1, NewBoard2, RowLetters2, ColNumbers2, Mode, Rows, Cols)) :- 
     valid_moves(game_state(Turn, Player1Score, Player2Score, Board1, RowLetters1, ColNumbers1, Board2, RowLetters2, ColNumbers2, Mode, Rows, Cols), ListOfMoves),
     is_a_valid_move((Row, Col), ListOfMoves, 1),
 
@@ -176,6 +176,4 @@ move(game_state(Turn, Player1Score, Player2Score, Board1, RowLetters1, ColNumber
     letter_number_to_coord((Row, Col), RowLetters2, ColNumbers2, (A2, B2)),
 
     format('A1: ~w, B1: ~w, A2: ~w, B2: ~w~n', [A1, B1, A2, B2]),
-    update_board(Board1, Board2, (A1, B1), (A2, B2), Char, NewBoard1, NewBoard2),
-
-    NewGameState = game_state(Turn, Player1Score, Player2Score, NewBoard1, RowLetters1, ColNumbers1, NewBoard2, RowLetters2, ColNumbers2, Mode, Rows, Cols).
+    update_board(Board1, Board2, (A1, B1), (A2, B2), Char, NewBoard1, NewBoard2).

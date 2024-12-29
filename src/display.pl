@@ -57,53 +57,31 @@ display_state_of_game(game_state(Turn, Score1, Score2, Board1, Rows1, Cols1, Boa
 
 
 % Validation predicates
-validate_rows(Rows) :-
-    Rows >= 4,
-    Rows =< 10.
+read_number(Value) :-
+    read(Value),
+    number(Value).
 
-validate_cols(Cols) :-
-    Cols >= 4,
-    Cols =< 10.
+% Get option within a range
+% get_option(+Min, +Max, +Context, -Value)
+% Unifies Value with the value given by user input between Min and Max when asked about Context
+get_option(Min, Max, Context, Value) :-
+    format('~a between ~d and ~d: ', [Context, Min, Max]),
+    repeat,
+    read_number(Value),
+    between(Min, Max, Value), !.
 
-validate_mode(Mode) :-
-    Mode >= 1,
-    Mode =< 3.
-
-% Get valid rows - success case
+% Get valid rows
 get_valid_rows(Rows) :-
-    write('Enter number of rows (4-10): '),
-    read(Rows),
-    validate_rows(Rows).
+    get_option(4, 10, 'Enter number of rows', Rows).
 
-% Get valid rows - failure case
-get_valid_rows(Rows) :-
-    write('Invalid number of rows! Must be between 4 and 10.'), nl,
-    get_valid_rows(Rows).
-
-% Get valid columns - success case
+% Get valid columns
 get_valid_cols(Cols) :-
-    write('Enter number of columns (4-10): '),
-    read(Cols),
-    validate_cols(Cols).
+    get_option(4, 10, 'Enter number of columns', Cols).
 
-% Get valid columns - failure case
-get_valid_cols(Cols) :-
-    write('Invalid number of columns! Must be between 4 and 10.'), nl,
-    get_valid_cols(Cols).
-
-% Get valid mode - success case
+% Get valid mode
 get_valid_mode(Mode) :-
-    write('Select game mode:'), nl,
-    write('1. Player vs Player'), nl,
-    write('2. Player vs Bot (Easy)'), nl,
-    write('3. Player vs Bot (Medium)'), nl,
-    read(Mode),
-    validate_mode(Mode).
+    get_option(1, 3, 'Select game mode (1. Player vs Player, 2. Player vs Bot (Easy), 3. Player vs Bot (Medium))', Mode).
 
-% Get valid mode - failure case
-get_valid_mode(Mode) :-
-    write('Invalid mode! Must be 1, 2 or 3.'), nl,
-    get_valid_mode(Mode).
 
 setup_game(GameState) :-
     write('Start Game'),nl,
@@ -171,11 +149,20 @@ validate_row_letter(RowLetter, Rows, RowLetters) :-
     RowCode =< MaxRowCode,
     nth1(_, RowLetters, RowLetter).
 
-read_user_input(1, game_state(Turn, Player1Score, Player2Score, Board1, RowLetters1, ColNumbers1, Board2, RowLetters2, ColNumbers2, Mode, Rows, Cols), (A1, B1)) :-
+read_user_input(1, game_state(Turn, Player1Score, Player2Score, Board1, RowLetters1, ColNumbers1, Board2, RowLetters2, ColNumbers2, Mode, Rows, Cols), Char, (A1, B1)) :-
     write('Player 1\'s turn'), nl,
-    write('Choose the letter of the line to put the X: '), nl,
+    format('Choose the letter of the line to put the ~w: ', [Char]), nl,
     read(A1),
-    write('Choose the number of the column to put the X: '), nl,
+    format('Choose the number of the column to put the ~w: ', [Char]), nl,
+    read(B1),
+
+    format('A1: ~w, B1: ~w', [A1, B1]), nl.
+
+read_user_input(2, game_state(Turn, Player1Score, Player2Score, Board1, RowLetters1, ColNumbers1, Board2, RowLetters2, ColNumbers2, Mode, Rows, Cols), Char, (A1, B1)) :-
+    write('Player 2\'s turn'), nl,
+    format('Choose the letter of the line to put the ~w: ', [Char]), nl,
+    read(A1),
+    format('Choose the number of the column to put the ~w: ', [Char]), nl,
     read(B1),
 
     format('A1: ~w, B1: ~w', [A1, B1]), nl.

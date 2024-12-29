@@ -17,6 +17,7 @@
 :- use_module(library(lists)).
 :- use_module(library(between)).
 :- use_module(library(ordsets)).
+:- use_module(library(between)).
 
 :- consult('display.pl').
 
@@ -92,24 +93,55 @@ valid_moves(game_state(_, _, _, Board1, RowLetters, ColNumbers, _, _, _, _, _, _
 coord_to_letter_number_with_labels(RowLetters, ColNumbers, (Row, Col), (A, B)) :-
     coord_to_letter_number((Row, Col), RowLetters, ColNumbers, (A, B)).
 
+change_turn((1, Player1Score, Player2Score, Board1, RowLetters1, ColNumbers1, Board2, RowLetters2, ColNumbers2, Mode, Rows, Cols), 
+            (2, Player1Score, Player2Score, Board1, RowLetters1, ColNumbers1, Board2, RowLetters2, ColNumbers2, Mode, Rows, Cols)).
+
+change_turn((2, Player1Score, Player2Score, Board1, RowLetters1, ColNumbers1, Board2, RowLetters2, ColNumbers2, Mode, Rows, Cols), 
+            (1, Player1Score, Player2Score, Board1, RowLetters1, ColNumbers1, Board2, RowLetters2, ColNumbers2, Mode, Rows, Cols)).
+
+
 state(menu).
 state(setup).
 state(player1_turn).
 state(player2_turn).
+state(bot_easy_turn).
+state(bot_medium_turn).
 state(game_over).
 
 % Setup state
 run_state(setup, GameState) :-
-    setup_game(GameState).
-    %run_state(player1_turn, GameState).
+    setup_game(GameState),
+    run_state(player1_turn, GameState).
+
+run_state(player1_turn, GameState) :-
+    read_user_input(1, GameState, 'X', (A1, B1)),
+    move(GameState, ((A1, B1), 'X'), NewGameStateX),
+    display_game(NewGameStateX),
+
+    read_user_input(1, NewGameStateX, 'O', (A2, B2)),
+    move(NewGameStateX, ((A2, B2), 'O'), NewGameStateO),
+    display_game(NewGameStateO),
+
+    %change_turn(NewGameStateO, NextNewGameState),
+    run_state(player2_turn, NewGameStateO).
+
+run_state(player2_turn, GameState) :-
+    read_user_input(2, GameState, 'X', (A1, B1)),
+    move(GameState, ((A1, B1), 'X'), NewGameStateX),
+    display_game(NewGameStateX),
+
+    read_user_input(2, NewGameStateX, 'O', (A2, B2)),
+    move(NewGameStateX, ((A2, B2), 'O'), NewGameStateO),
+    display_game(NewGameStateO),
+
+    %change_turn(NewGameStateO, NextNewGameState),
+    run_state(player1_turn, NewGameStateO).
+
+
 
 game_loop :-
     run_state(setup, GameState),
     
-    read_user_input(1, NewGameState, (A1, B1)),
-    move(GameState, ((A1, B1), 'X'), NewGameState),
-    display_game(NewGameState),
-
     write('FIMMMM'), nl.
 
 is_a_valid_move((Row, Col), [(Row, Col) | Tail], 1).
@@ -139,13 +171,11 @@ replace_char_board_row([Head|Tail], Row, Actual_Index, Char, [Head|Res]) :-
 move(game_state(Turn, Player1Score, Player2Score, Board1, RowLetters1, ColNumbers1, Board2, RowLetters2, ColNumbers2, Mode, Rows, Cols), ((Row, Col), Char), NewGameState) :- 
     valid_moves(game_state(Turn, Player1Score, Player2Score, Board1, RowLetters1, ColNumbers1, Board2, RowLetters2, ColNumbers2, Mode, Rows, Cols), ListOfMoves),
     is_a_valid_move((Row, Col), ListOfMoves, 1),
-    
+
     letter_number_to_coord((Row, Col), RowLetters1, ColNumbers1, (A1, B1)),
     letter_number_to_coord((Row, Col), RowLetters2, ColNumbers2, (A2, B2)),
-    
+
     format('A1: ~w, B1: ~w, A2: ~w, B2: ~w~n', [A1, B1, A2, B2]),
     update_board(Board1, Board2, (A1, B1), (A2, B2), Char, NewBoard1, NewBoard2),
-    
+
     NewGameState = game_state(Turn, Player1Score, Player2Score, NewBoard1, RowLetters1, ColNumbers1, NewBoard2, RowLetters2, ColNumbers2, Mode, Rows, Cols).
-
-

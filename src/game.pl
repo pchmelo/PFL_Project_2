@@ -20,6 +20,7 @@
 :- use_module(library(between)).
 
 :- consult('display.pl').
+:- consult('score.pl').
 
 % Generate empty board
 generate_empty_board(Rows, Cols, Board) :-

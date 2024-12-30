@@ -114,26 +114,46 @@ run_state(setup, GameState) :-
     setup_game(GameState),
     run_state(player1_turn, GameState).
 
-run_state(player1_turn, GameState) :-
-    read_user_input(1, GameState, 'X', (A1, B1)),
-    move(GameState, ((A1, B1), 'X'), NewGameStateX),
-    display_game(NewGameStateX),
+change_score(game_state(Turn, Player1Score, Player2Score, Board1, RowLetters1, ColNumbers1, Board2, RowLetters2, ColNumbers2, Mode, Rows, Cols), ((X, Y), Char), game_state(Turn, NewPlayer1Score, NewPlayer2Score, Board1, RowLetters1, ColNumbers1, Board2, RowLetters2, ColNumbers2, Mode, Rows, Cols)) :-
+    letter_number_to_coord((X, Y), RowLetters1, ColNumbers1, (A1t, B1t)),
+    letter_number_to_coord((X, Y), RowLetters2, ColNumbers2, (A2t, B2t)),
 
-    read_user_input(1, NewGameStateX, 'O', (A2, B2)),
-    move(NewGameStateX, ((A2, B2), 'O'), NewGameStateO),
-    display_game(NewGameStateO),
+    A1 is A1t - 1,
+    B1 is B1t - 1,
+    A2 is A2t - 1,
+    B2 is B2t - 1,
+
+    format('X: ~w Y: ~w', [X, Y]), nl,
+    format('A1: ~w B1: ~w', [A1, B1]), nl,
+    format('A2: ~w B2: ~w', [A2, B2]), nl,
+    
+    check_all_score(Board1, Player1Score, A1, B1, Char, NewPlayer1Score),
+    check_all_score(Board2, Player2Score, A2, B2, Char, NewPlayer2Score).
+
+run_state(player1_turn, GameState) :-
+    read_user_input(1, GameState, x, (A1, B1)),
+    move(GameState, ((A1, B1), x), NewGameStateX),
+    change_score(NewGameStateX, ((A1, B1), x), NewGameStateXScored),
+    display_game(NewGameStateXScored),
+
+    read_user_input(1, NewGameStateXScored, o, (A2, B2)),
+    move(NewGameStateXScored, ((A2, B2), o), NewGameStateO),
+    change_score(NewGameStateO, ((A2, B2), o), NewGameStateOScored),
+    display_game(NewGameStateOScored),
 
     %change_turn(NewGameStateO, NextNewGameState),
-    run_state(player2_turn, NewGameStateO).
+    run_state(player2_turn, NewGameStateOScored).
 
 run_state(player2_turn, GameState) :-
-    read_user_input(2, GameState, 'X', (A1, B1)),
-    move(GameState, ((A1, B1), 'X'), NewGameStateX),
-    display_game(NewGameStateX),
+    read_user_input(2, GameState, x, (A1, B1)),
+    move(GameState, ((A1, B1), x), NewGameStateX),
+    change_score(NewGameStateX, ((A1, B1), x), NewGameStateXScored),
+    display_game(NewGameStateXScored),
 
-    read_user_input(2, NewGameStateX, 'O', (A2, B2)),
-    move(NewGameStateX, ((A2, B2), 'O'), NewGameStateO),
-    display_game(NewGameStateO),
+    read_user_input(2, NewGameStateXScored, o, (A2, B2)),
+    move(NewGameStateXScored, ((A2, B2), o), NewGameStateO),
+    change_score(NewGameStateO, ((A2, B2), o), NewGameStateOScored),
+    display_game(NewGameStateOScored),
 
     %change_turn(NewGameStateO, NextNewGameState),
     run_state(player1_turn, NewGameStateO).

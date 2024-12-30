@@ -141,28 +141,34 @@ display_cell(Cell) :-
     format('~w ', [Cell]).
 
 % Validate if the row letter is within the possible range
-validate_row_letter(RowLetter, Rows, RowLetters) :-
+validate_row_letter(RowLetter, Rows) :-
     char_code(RowLetter, RowCode),
     char_code('A', ACode),
     MaxRowCode is ACode + Rows - 1,
     RowCode >= ACode,
-    RowCode =< MaxRowCode,
-    nth1(_, RowLetters, RowLetter).
+    RowCode =< MaxRowCode.
 
-read_user_input(1, game_state(Turn, Player1Score, Player2Score, Board1, RowLetters1, ColNumbers1, Board2, RowLetters2, ColNumbers2, Mode, Rows, Cols), Char, (A1, B1)) :-
-    write('Player 1\'s turn'), nl,
+% Validate if the column number is within the possible range
+validate_col_number(ColNumber, Cols) :-
+    between(1, Cols, ColNumber).
+
+% Read user input and validate
+read_user_input(Player, game_state(Turn, Player1Score, Player2Score, Board1, RowLetters1, ColNumbers1, Board2, RowLetters2, ColNumbers2, Mode, Rows, Cols), Char, (A1, B1)) :-
+    format('Player ~w\'s turn', [Player]), nl,
+    repeat,
     format('Choose the letter of the line to put the ~w: ', [Char]), nl,
-    read(A1),
+    get_char(_), % Consume the newline character
+    get_char(A1),
+    validate_row_letter(A1, Rows),
     format('Choose the number of the column to put the ~w: ', [Char]), nl,
     read(B1),
-
+    validate_col_number(B1, Cols),
+    validate_move((A1, B1), game_state(Turn, Player1Score, Player2Score, Board1, RowLetters1, ColNumbers1, Board2, RowLetters2, ColNumbers2, Mode, Rows, Cols)),
     format('A1: ~w, B1: ~w', [A1, B1]), nl.
 
-read_user_input(2, game_state(Turn, Player1Score, Player2Score, Board1, RowLetters1, ColNumbers1, Board2, RowLetters2, ColNumbers2, Mode, Rows, Cols), Char, (A1, B1)) :-
-    write('Player 2\'s turn'), nl,
-    format('Choose the letter of the line to put the ~w: ', [Char]), nl,
-    read(A1),
-    format('Choose the number of the column to put the ~w: ', [Char]), nl,
-    read(B1),
-
-    format('A1: ~w, B1: ~w', [A1, B1]), nl.
+% Validate if the move is valid
+validate_move((A1, B1), game_state(_, _, _, Board1, RowLetters1, ColNumbers1, _, _, _, _, _, _)) :-
+    nth1(RowIndex, RowLetters1, A1),
+    nth1(ColIndex, ColNumbers1, B1),
+    nth1(RowIndex, Board1, Row),
+    nth1(ColIndex, Row, empty).

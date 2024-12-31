@@ -189,12 +189,12 @@ check_all_squares(Board, Total_Points, X, Y, Char, Next_Total_Points) :-
 
 
 sample_board([
-    [x, x, x, empty, x, empty],
-    [x, x, x, x, empty, empty],
-    [x, x, x, o, empty, empty],
-    [empty, x, empty, x, empty, empty],
-    [x, empty, empty, empty, x, empty],
-    [empty, empty, empty, empty, empty, empty]
+    [x, x, x, o, x, o],
+    [x, x, x, x, o, o],
+    [x, x, x, o, o, o],
+    [o, x, o, x, o, o],
+    [x, o, o, o, x, o],
+    [o, o, o, o, o, o]
 ]).
 
 

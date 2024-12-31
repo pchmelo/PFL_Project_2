@@ -1,9 +1,3 @@
-choose_move(GameState,  2,  ((X, Y), Char)) :-
-    easy_bot_move(GameState, X, Y).
-
-choose_move(GameState,  3,  ((X, Y), Char)) :-
-    medium_bot_move(GameState, Char, X, Y).
-
 easy_bot_move(GameState, X, Y) :-
     valid_moves(GameState,  ListOfMoves),
     random_member((X, Y), ListOfMoves).

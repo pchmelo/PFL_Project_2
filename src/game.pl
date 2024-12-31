@@ -128,65 +128,39 @@ change_score(game_state(Turn, Player1Score, Player2Score, Board1, RowLetters1, C
 
 % Setup state
 run_state(setup, GameState) :-
-    setup_game(GameState, Mode),
-    run_state(player1_turn, Mode, GameState).
+    setup_game(GameState, ModeP1, ModeP2),
+    run_state(player1_turn, ModeP1, ModeP2, GameState).
 
 
-run_state(player1_turn, Mode, GameState) :-
-    read_user_input(1, GameState, x, (A1, B1)),
+run_state(player1_turn, ModeP1, ModeP2, GameState) :-
+    write('Entrei'), nl,
+    choose_move(GameState, ModeP1, 1, ((A1, B1), x)),
     move(GameState, ((A1, B1), x), NewGameStateX),
     change_score(NewGameStateX, ((A1, B1), x), NewGameStateXScored),
     display_game(NewGameStateXScored),
 
-    read_user_input(1, NewGameStateXScored, o, (A2, B2)),
+    choose_move(NewGameStateXScored, ModeP1, 1, ((A2, B2), o)),
     move(NewGameStateXScored, ((A2, B2), o), NewGameStateO),
     change_score(NewGameStateO, ((A2, B2), o), NewGameStateOScored),
     display_game(NewGameStateOScored),
 
     %change_turn(NewGameStateO, NextNewGameState),
-    run_state(player2_turn, Mode, NewGameStateOScored).
+    run_state(player2_turn, ModeP1, ModeP2, NewGameStateOScored).
 
-run_state(player2_turn, 1, GameState) :-
-    read_user_input(2, GameState, x, (A1, B1)),
+run_state(player2_turn, ModeP1, ModeP2, GameState) :-
+    choose_move(GameState,  ModeP2, 2, ((A1, B1), x)),
     move(GameState, ((A1, B1), x), NewGameStateX),
     change_score(NewGameStateX, ((A1, B1), x), NewGameStateXScored),
     display_game(NewGameStateXScored),
 
-    read_user_input(2, NewGameStateXScored, o, (A2, B2)),
+    choose_move(NewGameStateXScored,  ModeP2, 2, ((A2, B2), o)),
     move(NewGameStateXScored, ((A2, B2), o), NewGameStateO),
     change_score(NewGameStateO, ((A2, B2), o), NewGameStateOScored),
     display_game(NewGameStateOScored),
 
     %change_turn(NewGameStateO, NextNewGameState),
-    run_state(player1_turn, 1, NewGameStateO).
+    run_state(player1_turn, ModeP1, ModeP2, NewGameStateO).
 
-run_state(player2_turn, 2, GameState) :-
-    choose_move(GameState,  2,  ((A1, B1), x)),
-    move(GameState, ((A1, B1), x), NewGameStateX),
-    change_score(NewGameStateX, ((A1, B1), x), NewGameStateXScored),
-    display_game(NewGameStateXScored),
-
-    choose_move(NewGameStateXScored,  2,  ((A2, B2), o)),
-    move(NewGameStateXScored, ((A2, B2), o), NewGameStateO),
-    change_score(NewGameStateO, ((A2, B2), o), NewGameStateOScored),
-    display_game(NewGameStateOScored),
-
-    %change_turn(NewGameStateO, NextNewGameState),
-    run_state(player1_turn, 2, NewGameStateO).
-
-run_state(player2_turn, 3, GameState) :-
-    choose_move(GameState,  3,  ((A1, B1), x)),
-    move(GameState, ((A1, B1), x), NewGameStateX),
-    change_score(NewGameStateX, ((A1, B1), x), NewGameStateXScored),
-    display_game(NewGameStateXScored),
-
-    choose_move(NewGameStateXScored,  3,  ((A2, B2), o)),
-    move(NewGameStateXScored, ((A2, B2), o), NewGameStateO),
-    change_score(NewGameStateO, ((A2, B2), o), NewGameStateOScored),
-    display_game(NewGameStateOScored),
-
-    %change_turn(NewGameStateO, NextNewGameState),
-    run_state(player1_turn, 3, NewGameStateO).
 
 game_loop :-
     run_state(setup, GameState),
@@ -245,3 +219,12 @@ find_winner(Score1, Score2, 2) :-
     Score2 > Score1, !.
     
 find_winner(_, _, 0).
+
+choose_move(GameState,  1,  Player, ((X, Y), Char)) :-
+    read_user_input(Player, GameState, Char, (X, Y)).
+
+choose_move(GameState,  2, _, ((X, Y), _)):-
+    easy_bot_move(GameState, X, Y).
+
+choose_move(GameState,  3, _, ((X, Y), Char)) :-
+    medium_bot_move(GameState, Char, X, Y).

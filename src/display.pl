@@ -83,7 +83,7 @@ get_valid_mode(Mode) :-
     get_option(1, 3, 'Select game mode (1. Player vs Player, 2. Player vs Bot (Easy), 3. Player vs Bot (Medium))', Mode).
 
 
-setup_game(GameState) :-
+setup_game(GameState, Mode) :-
     write('Start Game'),nl,
     
     get_valid_rows(Rows),

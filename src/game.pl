@@ -161,12 +161,12 @@ run_state(player2_turn, 1, GameState) :-
     run_state(player1_turn, 1, NewGameStateO).
 
 run_state(player2_turn, 2, GameState) :-
-    easy_bot_move(GameState, A1, B1),
+    choose_move(GameState,  2,  ((A1, B1), x)),
     move(GameState, ((A1, B1), x), NewGameStateX),
     change_score(NewGameStateX, ((A1, B1), x), NewGameStateXScored),
     display_game(NewGameStateXScored),
 
-    easy_bot_move(GameState, A2, B2),
+    choose_move(NewGameStateXScored,  2,  ((A2, B2), o)),
     move(NewGameStateXScored, ((A2, B2), o), NewGameStateO),
     change_score(NewGameStateO, ((A2, B2), o), NewGameStateOScored),
     display_game(NewGameStateOScored),
@@ -175,12 +175,12 @@ run_state(player2_turn, 2, GameState) :-
     run_state(player1_turn, 2, NewGameStateO).
 
 run_state(player2_turn, 3, GameState) :-
-    read_user_input(2, GameState, x, (A1, B1)),
+    choose_move(GameState,  3,  ((A1, B1), x)),
     move(GameState, ((A1, B1), x), NewGameStateX),
     change_score(NewGameStateX, ((A1, B1), x), NewGameStateXScored),
     display_game(NewGameStateXScored),
 
-    read_user_input(2, NewGameStateXScored, o, (A2, B2)),
+    choose_move(NewGameStateXScored,  3,  ((A2, B2), o)),
     move(NewGameStateXScored, ((A2, B2), o), NewGameStateO),
     change_score(NewGameStateO, ((A2, B2), o), NewGameStateOScored),
     display_game(NewGameStateOScored),

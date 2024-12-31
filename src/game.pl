@@ -17,7 +17,6 @@
 :- use_module(library(lists)).
 :- use_module(library(between)).
 :- use_module(library(ordsets)).
-:- use_module(library(between)).
 
 :- consult('display.pl').
 :- consult('score.pl').
@@ -133,34 +132,49 @@ run_state(setup, GameState) :-
 
 
 run_state(player1_turn, ModeP1, ModeP2, GameState) :-
-    write('Entrei'), nl,
     choose_move(GameState, ModeP1, 1, ((A1, B1), x)),
     move(GameState, ((A1, B1), x), NewGameStateX),
     change_score(NewGameStateX, ((A1, B1), x), NewGameStateXScored),
     display_game(NewGameStateXScored),
 
-    choose_move(NewGameStateXScored, ModeP1, 1, ((A2, B2), o)),
-    move(NewGameStateXScored, ((A2, B2), o), NewGameStateO),
-    change_score(NewGameStateO, ((A2, B2), o), NewGameStateOScored),
-    display_game(NewGameStateOScored),
+    (game_over(NewGameStateXScored, Winner) ->
+        run_state(game_over, Winner)
+    ;
+        choose_move(NewGameStateXScored, ModeP1, 1, ((A2, B2), o)),
+        move(NewGameStateXScored, ((A2, B2), o), NewGameStateO),
+        change_score(NewGameStateO, ((A2, B2), o), NewGameStateOScored),
+        display_game(NewGameStateOScored),
 
-    %change_turn(NewGameStateO, NextNewGameState),
-    run_state(player2_turn, ModeP1, ModeP2, NewGameStateOScored).
+        (game_over(NewGameStateOScored, Winner) ->
+            run_state(game_over, Winner)
+        ;
+            run_state(player2_turn, ModeP1, ModeP2, NewGameStateOScored)
+        )
+    ).
 
 run_state(player2_turn, ModeP1, ModeP2, GameState) :-
-    choose_move(GameState,  ModeP2, 2, ((A1, B1), x)),
+    choose_move(GameState, ModeP2, 2, ((A1, B1), x)),
     move(GameState, ((A1, B1), x), NewGameStateX),
     change_score(NewGameStateX, ((A1, B1), x), NewGameStateXScored),
     display_game(NewGameStateXScored),
 
-    choose_move(NewGameStateXScored,  ModeP2, 2, ((A2, B2), o)),
-    move(NewGameStateXScored, ((A2, B2), o), NewGameStateO),
-    change_score(NewGameStateO, ((A2, B2), o), NewGameStateOScored),
-    display_game(NewGameStateOScored),
+    (game_over(NewGameStateXScored, Winner) ->
+        run_state(game_over, Winner)
+    ;
+        choose_move(NewGameStateXScored, ModeP2, 2, ((A2, B2), o)),
+        move(NewGameStateXScored, ((A2, B2), o), NewGameStateO),
+        change_score(NewGameStateO, ((A2, B2), o), NewGameStateOScored),
+        display_game(NewGameStateOScored),
 
-    %change_turn(NewGameStateO, NextNewGameState),
-    run_state(player1_turn, ModeP1, ModeP2, NewGameStateO).
+        (game_over(NewGameStateOScored, Winner) ->
+            run_state(game_over, Winner)
+        ;
+            run_state(player1_turn, ModeP1, ModeP2, NewGameStateOScored)
+        )
+    ).
 
+run_state(game_over, Winner) :-
+    format('Game over! Winner: Player ~w~n', [Winner]).
 
 game_loop :-
     run_state(setup, GameState),
@@ -213,10 +227,10 @@ game_over(game_state(Turn, Score1, Score2, Board1, Rows1, Cols1, Board2, Rows2, 
     find_winner(Score1, Score2, Winner).
 
 find_winner(Score1, Score2, 1) :-
-    Score1 > Score2, !.
+    Score1 < Score2, !.
     
 find_winner(Score1, Score2, 2) :-
-    Score2 > Score1, !.
+    Score2 < Score1, !.
     
 find_winner(_, _, 0).
 

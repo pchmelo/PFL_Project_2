@@ -177,3 +177,16 @@ move(game_state(Turn, Player1Score, Player2Score, Board1, RowLetters1, ColNumber
 
     format('A1: ~w, B1: ~w, A2: ~w, B2: ~w~n', [A1, B1, A2, B2]),
     update_board(Board1, Board2, (A1, B1), (A2, B2), Char, NewBoard1, NewBoard2).
+
+game_over(game_state(Turn, Score1, Score2, Board1, Rows1, Cols1, Board2, Rows2, Cols2, Mode, Rows, Cols), Winner) :-
+    find_empty_spaces(Board1, EmptySpaces),
+    length(EmptySpaces, 0),
+    find_winner(Score1, Score2, Winner).
+
+find_winner(Score1, Score2, 1) :-
+    Score1 > Score2, !.
+    
+find_winner(Score1, Score2, 2) :-
+    Score2 > Score1, !.
+    
+find_winner(_, _, 0).

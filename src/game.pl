@@ -233,3 +233,15 @@ test_run:-
     move(GameState, ((X, Y), x), NewGameState),
     display_game(NewGameState).
 
+game_over(game_state(Turn, Score1, Score2, Board1, Rows1, Cols1, Board2, Rows2, Cols2, Mode, Rows, Cols), Winner) :-
+    find_empty_spaces(Board1, EmptySpaces),
+    length(EmptySpaces, 0),
+    find_winner(Score1, Score2, Winner).
+
+find_winner(Score1, Score2, 1) :-
+    Score1 > Score2, !.
+    
+find_winner(Score1, Score2, 2) :-
+    Score2 > Score1, !.
+    
+find_winner(_, _, 0).

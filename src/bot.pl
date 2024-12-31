@@ -18,20 +18,25 @@ find_best_move(GameState, Char, [(X, Y)|Tail], (Final_X, Final_Y)) :-
     move(GameState, ((X, Y), Char), NewGameState),
     change_score(NewGameState, ((X, Y), Char), NewGameStateScored),
     value(NewGameStateScored, 2, Value),
-    find_best_move(GameState, Char, Tail, (X, Y), Value, (Final_X, Final_Y)).
+    find_best_move(GameState, Char, Tail, [(X, Y)], Value, BestMoves),
+    random_member((Final_X, Final_Y), BestMoves).
 
 % Base case: no more moves to check
-find_best_move(_, _, [], (Best_X, Best_Y), _, (Best_X, Best_Y)).
+find_best_move(_, _, [], BestMoves, _, BestMoves).
 
 % Recursive case: check the next move
-find_best_move(GameState, Char, [(X, Y)|Tail], (Current_Best_X, Current_Best_Y), Current_Best_Value, (Final_X, Final_Y)) :-
+find_best_move(GameState, Char, [(X, Y)|Tail], CurrentBestMoves, CurrentBestValue, BestMoves) :-
     move(GameState, ((X, Y), Char), NewGameState),
     change_score(NewGameState, ((X, Y), Char), NewGameStateScored),
     value(NewGameStateScored, 2, Value),
-    (Value > Current_Best_Value ->
-        find_best_move(GameState, Char, Tail, (X, Y), Value, (Final_X, Final_Y))
+    (Value > CurrentBestValue ->
+        find_best_move(GameState, Char, Tail, [(X, Y)], Value, BestMoves)
     ;
-        find_best_move(GameState, Char, Tail, (Current_Best_X, Current_Best_Y), Current_Best_Value, (Final_X, Final_Y))
+        (Value == CurrentBestValue ->
+            find_best_move(GameState, Char, Tail, [(X, Y)|CurrentBestMoves], CurrentBestValue, BestMoves)
+        ;
+            find_best_move(GameState, Char, Tail, CurrentBestMoves, CurrentBestValue, BestMoves)
+        )
     ).
 
 % Evaluate the game state base on the player 1

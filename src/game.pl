@@ -246,5 +246,5 @@ choose_move(GameState,  1,  Player, ((X, Y), Char)) :-
 choose_move(GameState,  2, _, ((X, Y), _)):-
     easy_bot_move(GameState, X, Y).
 
-choose_move(GameState,  3, _, ((X, Y), Char)) :-
-    medium_bot_move(GameState, Char, X, Y).
+choose_move(GameState,  3, Player, ((X, Y), Char)) :-
+    medium_bot_move(GameState, Player, Char, X, Y).

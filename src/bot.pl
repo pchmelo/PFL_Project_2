@@ -3,33 +3,33 @@ easy_bot_move(GameState, X, Y) :-
     random_member((X, Y), ListOfMoves).
 
 % Define the medium bot move
-medium_bot_move(GameState, Char, X, Y) :-
+medium_bot_move(GameState, Player, Char, X, Y) :-
     valid_moves(GameState, ListOfMoves),
-    find_best_move(GameState, Char, ListOfMoves, (X, Y)).
+    find_best_move(GameState, Player, Char, ListOfMoves, (X, Y)).
 
 % Find the best move from the list of valid moves
-find_best_move(GameState, Char, [(X, Y)|Tail], (Final_X, Final_Y)) :-
+find_best_move(GameState, Player, Char, [(X, Y)|Tail], (Final_X, Final_Y)) :-
     move(GameState, ((X, Y), Char), NewGameState),
     change_score(NewGameState, ((X, Y), Char), NewGameStateScored),
-    value(NewGameStateScored, 2, Value),
-    find_best_move(GameState, Char, Tail, [(X, Y)], Value, BestMoves),
+    value(NewGameStateScored, Player, Value),
+    find_best_move(GameState, Player, Char, Tail, [(X, Y)], Value, BestMoves),
     random_member((Final_X, Final_Y), BestMoves).
 
 % Base case: no more moves to check
-find_best_move(_, _, [], BestMoves, _, BestMoves).
+find_best_move(_, _, _, [], BestMoves, _, BestMoves).
 
 % Recursive case: check the next move
-find_best_move(GameState, Char, [(X, Y)|Tail], CurrentBestMoves, CurrentBestValue, BestMoves) :-
+find_best_move(GameState, Player, Char, [(X, Y)|Tail], CurrentBestMoves, CurrentBestValue, BestMoves) :-
     move(GameState, ((X, Y), Char), NewGameState),
     change_score(NewGameState, ((X, Y), Char), NewGameStateScored),
-    value(NewGameStateScored, 2, Value),
+    value(NewGameStateScored, Player, Value),
     (Value > CurrentBestValue ->
-        find_best_move(GameState, Char, Tail, [(X, Y)], Value, BestMoves)
+        find_best_move(GameState, Player, Char, Tail, [(X, Y)], Value, BestMoves)
     ;
         (Value == CurrentBestValue ->
-            find_best_move(GameState, Char, Tail, [(X, Y)|CurrentBestMoves], CurrentBestValue, BestMoves)
+            find_best_move(GameState, Player, Char, Tail, [(X, Y)|CurrentBestMoves], CurrentBestValue, BestMoves)
         ;
-            find_best_move(GameState, Char, Tail, CurrentBestMoves, CurrentBestValue, BestMoves)
+            find_best_move(GameState, Player, Char, Tail, CurrentBestMoves, CurrentBestValue, BestMoves)
         )
     ).
 

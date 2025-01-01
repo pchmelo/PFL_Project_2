@@ -94,11 +94,11 @@ valid_moves(game_state(_, _, _, Board1, RowLetters, ColNumbers, _, _, _, _, _, _
 coord_to_letter_number_with_labels(RowLetters, ColNumbers, (Row, Col), (A, B)) :-
     coord_to_letter_number((Row, Col), RowLetters, ColNumbers, (A, B)).
 
-change_turn((1, Player1Score, Player2Score, Board1, RowLetters1, ColNumbers1, Board2, RowLetters2, ColNumbers2, Mode, Rows, Cols), 
-            (2, Player1Score, Player2Score, Board1, RowLetters1, ColNumbers1, Board2, RowLetters2, ColNumbers2, Mode, Rows, Cols)).
+change_turn(game_state(1, Player1Score, Player2Score, Board1, RowLetters1, ColNumbers1, Board2, RowLetters2, ColNumbers2, Mode, Rows, Cols), 
+            game_state(2, Player1Score, Player2Score, Board1, RowLetters1, ColNumbers1, Board2, RowLetters2, ColNumbers2, Mode, Rows, Cols)).
 
-change_turn((2, Player1Score, Player2Score, Board1, RowLetters1, ColNumbers1, Board2, RowLetters2, ColNumbers2, Mode, Rows, Cols), 
-            (1, Player1Score, Player2Score, Board1, RowLetters1, ColNumbers1, Board2, RowLetters2, ColNumbers2, Mode, Rows, Cols)).
+change_turn(game_state(2, Player1Score, Player2Score, Board1, RowLetters1, ColNumbers1, Board2, RowLetters2, ColNumbers2, Mode, Rows, Cols), 
+            game_state(1, Player1Score, Player2Score, Board1, RowLetters1, ColNumbers1, Board2, RowLetters2, ColNumbers2, Mode, Rows, Cols)).
 
 
 state(menu).
@@ -136,42 +136,31 @@ run_state(player1_turn, ModeP1, ModeP2, GameState) :-
     move(GameState, ((A1, B1), x), NewGameStateX),
     change_score(NewGameStateX, ((A1, B1), x), NewGameStateXScored),
     display_game(NewGameStateXScored),
-
-    (game_over(NewGameStateXScored, Winner) ->
-        run_state(game_over, Winner)
-    ;
-        choose_move(NewGameStateXScored, ModeP1, 1, ((A2, B2), o)),
-        move(NewGameStateXScored, ((A2, B2), o), NewGameStateO),
-        change_score(NewGameStateO, ((A2, B2), o), NewGameStateOScored),
-        display_game(NewGameStateOScored),
-
-        (game_over(NewGameStateOScored, Winner) ->
-            run_state(game_over, Winner)
-        ;
-            run_state(player2_turn, ModeP1, ModeP2, NewGameStateOScored)
-        )
-    ).
+    handle_game_over_or_continue(player1_turn, ModeP1, ModeP2, NewGameStateXScored, ModeP1, 1, ((A2, B2), o), player2_turn).
 
 run_state(player2_turn, ModeP1, ModeP2, GameState) :-
     choose_move(GameState, ModeP2, 2, ((A1, B1), x)),
     move(GameState, ((A1, B1), x), NewGameStateX),
     change_score(NewGameStateX, ((A1, B1), x), NewGameStateXScored),
     display_game(NewGameStateXScored),
+    handle_game_over_or_continue(player2_turn, ModeP1, ModeP2, NewGameStateXScored, ModeP2, 2, ((A2, B2), o), player1_turn).
 
-    (game_over(NewGameStateXScored, Winner) ->
-        run_state(game_over, Winner)
-    ;
-        choose_move(NewGameStateXScored, ModeP2, 2, ((A2, B2), o)),
-        move(NewGameStateXScored, ((A2, B2), o), NewGameStateO),
-        change_score(NewGameStateO, ((A2, B2), o), NewGameStateOScored),
-        display_game(NewGameStateOScored),
 
-        (game_over(NewGameStateOScored, Winner) ->
-            run_state(game_over, Winner)
-        ;
-            run_state(player1_turn, ModeP1, ModeP2, NewGameStateOScored)
-        )
-    ).
+handle_game_over_or_continue(CurrentTurn, ModeP1, ModeP2, GameState, Mode, Player, Move, NextTurn) :-
+    \+ game_over(GameState, _),
+    choose_move(GameState, Mode, Player, Move),
+    move(GameState, Move, NewGameState),
+    change_score(NewGameState, Move, NewGameStateScored),
+    display_game(NewGameStateScored),
+    change_turn(NewGameStateScored, NewNextGameState),
+    run_state(NextTurn, ModeP1, ModeP2, NewNextGameState).
+
+continue_game(player1_turn, ModeP1, ModeP2, GameState) :-
+    handle_game_over_or_continue(player1_turn, ModeP1, ModeP2, GameState, ModeP1, 1, ((A2, B2), o), player2_turn).
+
+continue_game(player2_turn, ModeP1, ModeP2, GameState) :-
+    handle_game_over_or_continue(player2_turn, ModeP1, ModeP2, GameState, ModeP2, 2, ((A1, B1), x), player1_turn).
+
 
 run_state(game_over, Winner) :-
     format('Game over! Winner: Player ~w~n', [Winner]),

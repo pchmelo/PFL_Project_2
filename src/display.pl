@@ -180,3 +180,7 @@ validate_move((A1, B1), game_state(_, _, _, Board1, RowLetters1, ColNumbers1, _,
     nth1(ColIndex, ColNumbers1, B1),
     nth1(RowIndex, Board1, Row),
     nth1(ColIndex, Row, empty).
+
+
+retry_game(Option):-
+    get_option(1, 2, '1- Reply the Game  2- Exit the Game', Option).

@@ -118,9 +118,9 @@ change_score(game_state(Turn, Player1Score, Player2Score, Board1, RowLetters1, C
     A2 is A2t - 1,
     B2 is B2t - 1,
 
-    format('X: ~w Y: ~w', [X, Y]), nl,
-    format('A1: ~w B1: ~w', [A1, B1]), nl,
-    format('A2: ~w B2: ~w', [A2, B2]), nl,
+    %format('X: ~w Y: ~w', [X, Y]), nl,
+    %format('A1: ~w B1: ~w', [A1, B1]), nl,
+    %format('A2: ~w B2: ~w', [A2, B2]), nl,
     
     check_all_score(Board1, Player1Score, A1, B1, Char, NewPlayer1Score),
     check_all_score(Board2, Player2Score, A2, B2, Char, NewPlayer2Score).
@@ -174,12 +174,18 @@ run_state(player2_turn, ModeP1, ModeP2, GameState) :-
     ).
 
 run_state(game_over, Winner) :-
-    format('Game over! Winner: Player ~w~n', [Winner]).
+    format('Game over! Winner: Player ~w~n', [Winner]),
+    retry_game(Option),
+    run_state(retry_game, Option).
+
+run_state(retry_game, 1):-
+    run_state(setup, GameState).
+
+run_state(retry_game, 2):-
+    write('End of the Game'), nl.
 
 game_loop :-
-    run_state(setup, GameState),
-    
-    write('FIMMMM'), nl.
+    run_state(setup, GameState).
 
 is_a_valid_move((Row, Col), [(Row, Col) | Tail], 1).
 is_a_valid_move((_, _), [], 0).
@@ -212,7 +218,7 @@ move(game_state(Turn, Player1Score, Player2Score, Board1, RowLetters1, ColNumber
     letter_number_to_coord((Row, Col), RowLetters1, ColNumbers1, (A1, B1)),
     letter_number_to_coord((Row, Col), RowLetters2, ColNumbers2, (A2, B2)),
 
-    format('A1: ~w, B1: ~w, A2: ~w, B2: ~w~n', [A1, B1, A2, B2]),
+    %format('A1: ~w, B1: ~w, A2: ~w, B2: ~w~n', [A1, B1, A2, B2]),
     update_board(Board1, Board2, (A1, B1), (A2, B2), Char, NewBoard1, NewBoard2).
 
 test_run:-

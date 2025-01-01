@@ -79,18 +79,26 @@ get_valid_cols(Cols) :-
     get_option(4, 10, 'Enter number of columns', Cols).
 
 % Get valid mode
-get_valid_mode(Mode) :-
-    get_option(1, 3, 'Select game mode (1. Player vs Player, 2. Player vs Bot (Easy), 3. Player vs Bot (Medium))', Mode).
+get_valid_mode(1, Mode) :-
+    get_option(1, 3, 'Select Player 1 (1. Player, 2. Bot(Easy), 3. Bot(Medium))', Mode).
 
+% Get valid mode
+get_valid_mode(2, Mode) :-
+    get_option(1, 3, 'Select Player 2 (1. Player, 2. Bot(Easy), 3. Bot(Medium))', Mode).
 
-setup_game(GameState, Mode) :-
+setup_game(GameState, ModeP1, ModeP2) :-
     write('Start Game'),nl,
     
     get_valid_rows(Rows),
     get_valid_cols(Cols),
-    get_valid_mode(Mode),
+    get_valid_mode(1, ModeP1),
+    get_valid_mode(2, ModeP2),
+    Mode is ModeP1 * 10 + ModeP2,
     
     initial_state([Rows, Cols, Mode], GameState),
+
+    format('ModeP1: ~w ModeP2: ~w', [ModeP1, ModeP2]), nl,
+
     display_game(GameState).
 
 % Display a list of coordinates
@@ -172,3 +180,7 @@ validate_move((A1, B1), game_state(_, _, _, Board1, RowLetters1, ColNumbers1, _,
     nth1(ColIndex, ColNumbers1, B1),
     nth1(RowIndex, Board1, Row),
     nth1(ColIndex, Row, empty).
+
+
+retry_game(Option):-
+    get_option(1, 2, '1- Reply the Game  2- Exit the Game', Option).

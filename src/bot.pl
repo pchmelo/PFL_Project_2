@@ -1,5 +1,5 @@
 easy_bot_move(GameState, X, Y) :-
-    valid_moves(GameState,  ListOfMoves),
+    valid_moves(GameState, ListOfMoves),
     random_member((X, Y), ListOfMoves).
 
 % Define the medium bot move
@@ -23,21 +23,25 @@ find_best_move(GameState, Player, Char, [(X, Y)|Tail], CurrentBestMoves, Current
     move(GameState, ((X, Y), Char), NewGameState),
     change_score(NewGameState, ((X, Y), Char), NewGameStateScored),
     value(NewGameStateScored, Player, Value),
-    (Value > CurrentBestValue ->
-        find_best_move(GameState, Player, Char, Tail, [(X, Y)], Value, BestMoves)
-    ;
-        (Value == CurrentBestValue ->
-            find_best_move(GameState, Player, Char, Tail, [(X, Y)|CurrentBestMoves], CurrentBestValue, BestMoves)
-        ;
-            find_best_move(GameState, Player, Char, Tail, CurrentBestMoves, CurrentBestValue, BestMoves)
-        )
-    ).
+    compare_moves(Value, CurrentBestValue, GameState, Player, Char, Tail, (X, Y), CurrentBestMoves, BestMoves).
 
-% Evaluate the game state base on the player 1
+% Compare the current move with the best move
+compare_moves(Value, CurrentBestValue, GameState, Player, Char, Tail, (X, Y), _, BestMoves) :-
+    Value > CurrentBestValue,
+    find_best_move(GameState, Player, Char, Tail, [(X, Y)], Value, BestMoves).
+
+compare_moves(Value, Value, GameState, Player, Char, Tail, (X, Y), CurrentBestMoves, BestMoves) :-
+    find_best_move(GameState, Player, Char, Tail, [(X, Y)|CurrentBestMoves], Value, BestMoves).
+
+compare_moves(Value, CurrentBestValue, GameState, Player, Char, Tail, _, CurrentBestMoves, BestMoves) :-
+    Value < CurrentBestValue,
+    find_best_move(GameState, Player, Char, Tail, CurrentBestMoves, CurrentBestValue, BestMoves).
+
+% Evaluate the game state based on the player 1
 value(game_state(_, Player1Score, Player2Score, _, _, _, _, _, _, _, _, _), 1, Value) :-
     Value is Player2Score - Player1Score.
 
-% Evaluate the game state base on the player 2
+% Evaluate the game state based on the player 2
 value(game_state(_, Player1Score, Player2Score, _, _, _, _, _, _, _, _, _), 2, Value) :-
     Value is Player1Score - Player2Score.
 

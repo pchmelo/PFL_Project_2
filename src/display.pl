@@ -31,8 +31,15 @@ print_boards([Row1|Rest1], [Row2|Rest2], [Letter1|Letters1], [Letter2|Letters2])
 
 print_row([]).
 print_row([Cell|Rest]) :-
-    (Cell = empty -> write(' . ') ; format(' ~w ', [Cell])),
+    print_cell(Cell),
     print_row(Rest).
+
+print_cell(empty) :-
+    write(' . ').
+
+print_cell(Cell) :-
+    Cell \= empty,
+    format(' ~w ', [Cell]).
 
 display_state_of_game(game_state(Turn, Score1, Score2, Board1, Rows1, Cols1, Board2, Rows2, Cols2, Mode, Rows, Cols)):-
     nl,
@@ -58,8 +65,8 @@ display_state_of_game(game_state(Turn, Score1, Score2, Board1, Rows1, Cols1, Boa
 
 % Validation predicates
 read_number(Value) :-
-    read(Value),
-    number(Value).
+    read_line(Input),
+    number_codes(Value, Input).
 
 % Get option within a range
 % get_option(+Min, +Max, +Context, -Value)
@@ -165,11 +172,13 @@ read_user_input(Player, game_state(Turn, Player1Score, Player2Score, Board1, Row
     format('Player ~w\'s turn', [Player]), nl,
     repeat,
     format('Choose the letter of the line to put the ~w: ', [Char]), nl,
-    get_char(_), % Consume the newline character
-    get_char(A1),
+    read_line(Line1),
+    atom_codes(Line1Atom, Line1),
+    atom_chars(Line1Atom, [A1|_]), % Extract the first character
     validate_row_letter(A1, Rows),
     format('Choose the number of the column to put the ~w: ', [Char]), nl,
-    read(B1),
+    read_line(Line2),
+    number_codes(B1, Line2),
     validate_col_number(B1, Cols),
     validate_move((A1, B1), game_state(Turn, Player1Score, Player2Score, Board1, RowLetters1, ColNumbers1, Board2, RowLetters2, ColNumbers2, Mode, Rows, Cols)),
     format('A1: ~w, B1: ~w', [A1, B1]), nl.
@@ -181,6 +190,5 @@ validate_move((A1, B1), game_state(_, _, _, Board1, RowLetters1, ColNumbers1, _,
     nth1(RowIndex, Board1, Row),
     nth1(ColIndex, Row, empty).
 
-
 retry_game(Option):-
-    get_option(1, 2, '1- Reply the Game  2- Exit the Game', Option).
+    get_option(1, 2, '1- Replay  2- Exit', Option).

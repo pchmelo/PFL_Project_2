@@ -213,7 +213,7 @@ run_state(retry_game, 2) :-
     write('End of the Game'), nl.
 
 % Main game loop
-game_loop :-
+run :-
     run_state(setup, GameState).
 
 is_a_valid_move((Row, Col), [(Row, Col) | Tail], 1).
@@ -249,12 +249,6 @@ move(game_state(Turn, Player1Score, Player2Score, Board1, RowLetters1, ColNumber
 
     %format('A1: ~w, B1: ~w, A2: ~w, B2: ~w~n', [A1, B1, A2, B2]),
     update_board(Board1, Board2, (A1, B1), (A2, B2), Char, NewBoard1, NewBoard2).
-
-test_run:-
-    setup_game(GameState, Mode),
-    easy_bot_move(GameState, X, Y),
-    move(GameState, ((X, Y), x), NewGameState),
-    display_game(NewGameState).
 
 game_over(game_state(Turn, Score1, Score2, Board1, Rows1, Cols1, Board2, Rows2, Cols2, Mode, Rows, Cols), Winner) :-
     find_empty_spaces(Board1, EmptySpaces),

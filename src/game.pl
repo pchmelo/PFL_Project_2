@@ -130,60 +130,89 @@ run_state(setup, GameState) :-
     setup_game(GameState, ModeP1, ModeP2),
     run_state(player1_turn, ModeP1, ModeP2, GameState).
 
-
+% Player 1's turn
 run_state(player1_turn, ModeP1, ModeP2, GameState) :-
+    make_player1_move_x(GameState, ModeP1, NewGameStateXScored),
+    handle_player1_x_outcome(NewGameStateXScored, ModeP1, ModeP2).
+
+make_player1_move_x(GameState, ModeP1, NewGameStateXScored) :-
     choose_move(GameState, ModeP1, 1, ((A1, B1), x)),
     move(GameState, ((A1, B1), x), NewGameStateX),
     change_score(NewGameStateX, ((A1, B1), x), NewGameStateXScored),
-    display_game(NewGameStateXScored),
+    display_game(NewGameStateXScored).
 
-    (game_over(NewGameStateXScored, Winner) ->
-        run_state(game_over, Winner)
-    ;
-        choose_move(NewGameStateXScored, ModeP1, 1, ((A2, B2), o)),
-        move(NewGameStateXScored, ((A2, B2), o), NewGameStateO),
-        change_score(NewGameStateO, ((A2, B2), o), NewGameStateOScored),
-        display_game(NewGameStateOScored),
+handle_player1_x_outcome(GameState, ModeP1, ModeP2) :-
+    game_over(GameState, Winner),
+    run_state(game_over, Winner).
+handle_player1_x_outcome(GameState, ModeP1, ModeP2) :-
+    \+ game_over(GameState, _),
+    make_player1_move_o(GameState, ModeP1, NewGameStateOScored),
+    handle_player1_o_outcome(NewGameStateOScored, ModeP1, ModeP2).
 
-        (game_over(NewGameStateOScored, Winner) ->
-            run_state(game_over, Winner)
-        ;
-            run_state(player2_turn, ModeP1, ModeP2, NewGameStateOScored)
-        )
-    ).
+make_player1_move_o(GameState, ModeP1, NewGameStateOScored) :-
+    choose_move(GameState, ModeP1, 1, ((A2, B2), o)),
+    move(GameState, ((A2, B2), o), NewGameStateO),
+    change_score(NewGameStateO, ((A2, B2), o), NewGameStateOScored),
+    display_game(NewGameStateOScored).
 
+handle_player1_o_outcome(GameState, ModeP1, ModeP2) :-
+    game_over(GameState, Winner),
+    run_state(game_over, Winner).
+handle_player1_o_outcome(GameState, ModeP1, ModeP2) :-
+    \+ game_over(GameState, _),
+    run_state(player2_turn, ModeP1, ModeP2, GameState).
+
+% Player 2's turn
 run_state(player2_turn, ModeP1, ModeP2, GameState) :-
+    make_player2_move_x(GameState, ModeP2, NewGameStateXScored),
+    handle_player2_x_outcome(NewGameStateXScored, ModeP1, ModeP2).
+
+make_player2_move_x(GameState, ModeP2, NewGameStateXScored) :-
     choose_move(GameState, ModeP2, 2, ((A1, B1), x)),
     move(GameState, ((A1, B1), x), NewGameStateX),
     change_score(NewGameStateX, ((A1, B1), x), NewGameStateXScored),
-    display_game(NewGameStateXScored),
+    display_game(NewGameStateXScored).
 
-    (game_over(NewGameStateXScored, Winner) ->
-        run_state(game_over, Winner)
-    ;
-        choose_move(NewGameStateXScored, ModeP2, 2, ((A2, B2), o)),
-        move(NewGameStateXScored, ((A2, B2), o), NewGameStateO),
-        change_score(NewGameStateO, ((A2, B2), o), NewGameStateOScored),
-        display_game(NewGameStateOScored),
+handle_player2_x_outcome(GameState, ModeP1, ModeP2) :-
+    game_over(GameState, Winner),
+    run_state(game_over, Winner).
+handle_player2_x_outcome(GameState, ModeP1, ModeP2) :-
+    \+ game_over(GameState, _),
+    make_player2_move_o(GameState, ModeP2, NewGameStateOScored),
+    handle_player2_o_outcome(NewGameStateOScored, ModeP1, ModeP2).
 
-        (game_over(NewGameStateOScored, Winner) ->
-            run_state(game_over, Winner)
-        ;
-            run_state(player1_turn, ModeP1, ModeP2, NewGameStateOScored)
-        )
-    ).
+make_player2_move_o(GameState, ModeP2, NewGameStateOScored) :-
+    choose_move(GameState, ModeP2, 2, ((A2, B2), o)),
+    move(GameState, ((A2, B2), o), NewGameStateO),
+    change_score(NewGameStateO, ((A2, B2), o), NewGameStateOScored),
+    display_game(NewGameStateOScored).
+
+handle_player2_o_outcome(GameState, ModeP1, ModeP2) :-
+    game_over(GameState, Winner),
+    run_state(game_over, Winner).
+handle_player2_o_outcome(GameState, ModeP1, ModeP2) :-
+    \+ game_over(GameState, _),
+    run_state(player1_turn, ModeP1, ModeP2, GameState).
+
+% Game over states
+run_state(game_over, 0) :-
+    write('Game over! Its a Draw!'), nl,
+    retry_game(Option),
+    run_state(retry_game, Option).
 
 run_state(game_over, Winner) :-
     format('Game over! Winner: Player ~w~n', [Winner]),
     retry_game(Option),
     run_state(retry_game, Option).
 
-run_state(retry_game, 1):-
+% Retry game states
+run_state(retry_game, 1) :-
     run_state(setup, GameState).
 
-run_state(retry_game, 2):-
+run_state(retry_game, 2) :-
     write('End of the Game'), nl.
 
+% Main game loop
 game_loop :-
     run_state(setup, GameState).
 
@@ -237,7 +266,7 @@ find_winner(Score1, Score2, 1) :-
     
 find_winner(Score1, Score2, 2) :-
     Score2 < Score1, !.
-    
+
 find_winner(_, _, 0).
 
 choose_move(GameState,  1,  Player, ((X, Y), Char)) :-

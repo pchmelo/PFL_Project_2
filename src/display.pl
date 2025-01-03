@@ -1,17 +1,14 @@
 display_game(game_state(Turn, Score1, Score2, Board1, Rows1, Cols1, Board2, Rows2, Cols2, Mode, _, _)) :-
     write('DISPLAY GAME'), nl,
-    % Display scores and turn
     format('Turn: Player ~w     Mode: ~w~n', [Turn, Mode]),
     format('Scores - P1: ~w  P2: ~w~n~n', [Score1, Score2]),
     
-    % Print column numbers for both boards
     write('  '),
     print_cols_numbers(Cols1),
     write(' || '),
     print_cols_numbers(Cols2),
     nl,
     
-    % Print boards side by side
     print_boards(Board1, Board2, Rows1, Rows2).
 
 print_cols_numbers([]).
@@ -45,10 +42,7 @@ display_state_of_game(game_state(Turn, Score1, Score2, Board1, Rows1, Cols1, Boa
     nl,
     write('----- Game State -----'), nl,
     display_game(game_state(Turn, Score1, Score2, Board1, Rows1, Cols1, Board2, Rows2, Cols2, Mode, Rows, Cols)),
-    write('-------------------'), nl,
     
-    % Display scrambled configurations
-    write('Scrambled Configurations:'), nl,
     write('Player 1:'), nl,
     format('  Rows: ~w~n', [Rows1]),
     format('  Cols: ~w~n', [Cols1]),
@@ -57,7 +51,6 @@ display_state_of_game(game_state(Turn, Score1, Score2, Board1, Rows1, Cols1, Boa
     format('  Cols: ~w~n', [Cols2]),
     nl,
     
-    % Game info
     format('Game Mode: ~w~n', [Mode]),
     format('Board Size: ~w x ~w~n', [Rows, Cols]),
     nl.

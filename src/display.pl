@@ -265,8 +265,7 @@ read_user_input(Player, game_state(Turn, Player1Score, Player2Score, Board1, Row
     read_line(Line2),
     number_codes(B1, Line2),
     validate_col_number(B1, Cols),
-    validate_move((A1, B1), game_state(Turn, Player1Score, Player2Score, Board1, RowLetters1, ColNumbers1, Board2, RowLetters2, ColNumbers2, Mode, Rows, Cols)),
-    format('A1: ~w, B1: ~w', [A1, B1]), nl.
+    validate_move((A1, B1), game_state(Turn, Player1Score, Player2Score, Board1, RowLetters1, ColNumbers1, Board2, RowLetters2, ColNumbers2, Mode, Rows, Cols)).
 
 /*
     parameters: Coordinates, GameState

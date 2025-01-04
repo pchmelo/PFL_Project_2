@@ -128,11 +128,11 @@ coord_to_letter_number_with_labels(RowLetters, ColNumbers, (Row, Col), (A, B)) :
     returns: new game state
     this predicate is used to change the turn of the game state 1 -> 2 or 2 -> 1
 */
-change_turn((1, Player1Score, Player2Score, Board1, RowLetters1, ColNumbers1, Board2, RowLetters2, ColNumbers2, Mode, Rows, Cols), 
-            (2, Player1Score, Player2Score, Board1, RowLetters1, ColNumbers1, Board2, RowLetters2, ColNumbers2, Mode, Rows, Cols)).
+change_turn(game_state(1, Player1Score, Player2Score, Board1, RowLetters1, ColNumbers1, Board2, RowLetters2, ColNumbers2, Mode, Rows, Cols), 
+            game_state(2, Player1Score, Player2Score, Board1, RowLetters1, ColNumbers1, Board2, RowLetters2, ColNumbers2, Mode, Rows, Cols)).
 
-change_turn((2, Player1Score, Player2Score, Board1, RowLetters1, ColNumbers1, Board2, RowLetters2, ColNumbers2, Mode, Rows, Cols), 
-            (1, Player1Score, Player2Score, Board1, RowLetters1, ColNumbers1, Board2, RowLetters2, ColNumbers2, Mode, Rows, Cols)).
+change_turn(game_state(2, Player1Score, Player2Score, Board1, RowLetters1, ColNumbers1, Board2, RowLetters2, ColNumbers2, Mode, Rows, Cols), 
+            game_state(1, Player1Score, Player2Score, Board1, RowLetters1, ColNumbers1, Board2, RowLetters2, ColNumbers2, Mode, Rows, Cols)).
 
 
 /*
@@ -208,7 +208,8 @@ handle_player1_x_outcome(GameState, ModeP1, ModeP2) :-
 make_player1_move_o(GameState, ModeP1, NewGameStateOScored) :-
     choose_move(GameState, ModeP1, 1, ((A2, B2), o)),
     move(GameState, ((A2, B2), o), NewGameStateO),
-    change_score(NewGameStateO, ((A2, B2), o), NewGameStateOScored),
+    change_score(NewGameStateO, ((A2, B2), o), GameStateOScored),
+    change_turn(GameStateOScored, NewGameStateOScored),
     display_game(NewGameStateOScored).
 
 /*
@@ -276,7 +277,8 @@ handle_player2_x_outcome(GameState, ModeP1, ModeP2) :-
 make_player2_move_o(GameState, ModeP2, NewGameStateOScored) :-
     choose_move(GameState, ModeP2, 2, ((A2, B2), o)),
     move(GameState, ((A2, B2), o), NewGameStateO),
-    change_score(NewGameStateO, ((A2, B2), o), NewGameStateOScored),
+    change_score(NewGameStateO, ((A2, B2), o), GameStateOScored),
+    change_turn(GameStateOScored, NewGameStateOScored),
     display_game(NewGameStateOScored).
 
 /*

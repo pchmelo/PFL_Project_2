@@ -1,7 +1,7 @@
 /*
     parameters: GameState
     return: coordinates
-    this function returns a random valid move from the list of valid moves, for the easy bot
+    this predicate returns a random valid move from the list of valid moves, for the easy bot
 */
 easy_bot_move(GameState, X, Y) :-
     valid_moves(GameState, ListOfMoves),
@@ -10,7 +10,7 @@ easy_bot_move(GameState, X, Y) :-
 /*
     parameters: GameState, Player, Char
     return: coordinates
-    this function returns the best move from the list of valid moves, for the medium bot. The best move is obtaind by evaluating the game state after each move possible and selecting the move that gives the best value for the Player (Medium Bot)
+    this predicate returns the best move from the list of valid moves, for the medium bot. The best move is obtaind by evaluating the game state after each move possible and selecting the move that gives the best value for the Player (Medium Bot)
 */
 medium_bot_move(GameState, Player, Char, X, Y) :-
     valid_moves(GameState, ListOfMoves),
@@ -19,7 +19,7 @@ medium_bot_move(GameState, Player, Char, X, Y) :-
 /*
     parameters: GameState, Player, Char, ListOfMoves
     return: coordinates
-    this function returns the best move from the list of valid moves. First gets the Gamestate resulted from each move possible, then evaluates the game state and save it in a list. Finally, it selects a random move the received list of best moves 
+    this predicate returns the best move from the list of valid moves. First gets the Gamestate resulted from each move possible, then evaluates the game state and save it in a list. Finally, it selects a random move the received list of best moves 
 */
 find_best_move(GameState, Player, Char, [(X, Y)|Tail], (Final_X, Final_Y)) :-
     move(GameState, ((X, Y), Char), NewGameState),
@@ -31,7 +31,7 @@ find_best_move(GameState, Player, Char, [(X, Y)|Tail], (Final_X, Final_Y)) :-
 /*
     parameters: GameState, Player, Char, ListOfMoves, CurrentBestMoves, CurrentBestValue, BestMoves
     return: coordinates
-    this function finds the best move from the list of valid moves. It evaluates the score of the game state, if the score is better than the current best score, it updates the best score and the best move. If the score is equal to the current best score, it adds the move to the list of best moves. If the score is worse than the current best score, it keeps the current best score and the current best moves. It uses recursion to check the next move
+    this predicate finds the best move from the list of valid moves. It evaluates the score of the game state, if the score is better than the current best score, it updates the best score and the best move. If the score is equal to the current best score, it adds the move to the list of best moves. If the score is worse than the current best score, it keeps the current best score and the current best moves. It uses recursion to check the next move
 */
 find_best_move(_, _, _, [], BestMoves, _, BestMoves).
 
@@ -45,7 +45,7 @@ find_best_move(GameState, Player, Char, [(X, Y)|Tail], CurrentBestMoves, Current
 /*
     parameters: Value, CurrentBestValue, GameState, Player, Char, Tail, (X, Y), BestMoves
     return: CurentBestMoves
-    this function checks if the value of the game state is better than the current best value. If it is, it updates the best value and the best moves. If the value is equal to the current best value, it adds the move to the list of best moves. If the value is worse than the current best value, it keeps the current best value and the current best moves
+    this predicate checks if the value of the game state is better than the current best value. If it is, it updates the best value and the best moves. If the value is equal to the current best value, it adds the move to the list of best moves. If the value is worse than the current best value, it keeps the current best value and the current best moves
 */
 compare_moves(Value, CurrentBestValue, GameState, Player, Char, Tail, (X, Y), _, BestMoves) :-
     Value > CurrentBestValue,
@@ -61,7 +61,7 @@ compare_moves(Value, CurrentBestValue, GameState, Player, Char, Tail, _, Current
 /*
     parameters: GameState, Player (1 - Player 1 and 2 - Player 2)
     return: Value
-    this function returns the value of the game state based on the score of the player 1 or player 2 
+    this predicate returns the value of the game state based on the score of the player 1 or player 2 
 */
 value(game_state(_, Player1Score, Player2Score, _, _, _, _, _, _, _, _, _), 1, Value) :-
     Value is Player2Score - Player1Score.

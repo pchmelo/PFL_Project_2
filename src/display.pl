@@ -1,7 +1,7 @@
 /*
     parameters: GameState
     return: none
-    this function displays the game state in the console. Displays the turn, mode, score and the two boards 
+    this predicate displays the game state in the console. Displays the turn, mode, score and the two boards 
 */
 display_game(game_state(Turn, Score1, Score2, Board1, Rows1, Cols1, Board2, Rows2, Cols2, Mode, _, _)) :-
     write('DISPLAY GAME'), nl,
@@ -19,7 +19,7 @@ display_game(game_state(Turn, Score1, Score2, Board1, Rows1, Cols1, Board2, Rows
 /*
     parameters: List of the numbers of the columns
     return: none
-    this function prints the numbers of the columns in the console by the usage of recursion
+    this predicate prints the numbers of the columns in the console by the usage of recursion
 */
 print_cols_numbers([]).
 print_cols_numbers([Col|Rest]) :-
@@ -29,7 +29,7 @@ print_cols_numbers([Col|Rest]) :-
 /*
     parameters: Board1, Board2, List of the letters of the rows of the board1, List of the letters of the rows of the board2
     return: none
-    this function is responsible for printing the boards in the console by row with the respective letters of the rows
+    this predicate is responsible for printing the boards in the console by row with the respective letters of the rows
 */
 print_boards([], [], [], []).
 print_boards([Row1|Rest1], [Row2|Rest2], [Letter1|Letters1], [Letter2|Letters2]) :-
@@ -44,7 +44,7 @@ print_boards([Row1|Rest1], [Row2|Rest2], [Letter1|Letters1], [Letter2|Letters2])
 /*
     parameters: Row
     return: none
-    this function returns the row in the console by the usage of recursion
+    this predicate returns the row in the console by the usage of recursion
 */
 print_row([]).
 print_row([Cell|Rest]) :-
@@ -54,7 +54,7 @@ print_row([Cell|Rest]) :-
 /*
     parameters: Cell(Char, in case of empty cell prints '.')
     return: none
-    this function prints the cell in the console
+    this predicate prints the cell in the console
 */
 print_cell(empty) :-
     write(' . ').
@@ -66,7 +66,7 @@ print_cell(Cell) :-
 /*
     parameters: GameState
     return: none
-    this function displays all the parameters of the game state in the console
+    this predicate displays all the parameters of the game state in the console
 */
 display_state_of_game(game_state(Turn, Score1, Score2, Board1, Rows1, Cols1, Board2, Rows2, Cols2, Mode, Rows, Cols)):-
     nl,
@@ -89,7 +89,7 @@ display_state_of_game(game_state(Turn, Score1, Score2, Board1, Rows1, Cols1, Boa
 /*
     parameters: none
     return: Value
-    this function reads a number from the console and returns it
+    this predicate reads a number from the console and returns it
 */
 read_number(Value) :-
     read_line(Input),
@@ -98,7 +98,7 @@ read_number(Value) :-
 /*
     parameters: Min, Max, Context
     return: Value
-    this function receives a minimum value, a maximum value and a context to display in the console. It reads a number from the console and validates if it is between the minimum and maximum values
+    this predicate receives a minimum value, a maximum value and a context to display in the console. It reads a number from the console and validates if it is between the minimum and maximum values
 */
 get_option(Min, Max, Context, Value) :-
     format('~a between ~d and ~d: ', [Context, Min, Max]),
@@ -109,7 +109,7 @@ get_option(Min, Max, Context, Value) :-
 /*
     parameters: none
     return: Rows
-    this function get the number of rows from the console
+    this predicate get the number of rows from the console
 */
 get_valid_rows(Rows) :-
     get_option(4, 10, 'Enter number of rows', Rows).
@@ -117,7 +117,7 @@ get_valid_rows(Rows) :-
 /*
     parameters: none
     return: Cols
-    this function get the number of columns from the console
+    this predicate get the number of columns from the console
 */
 get_valid_cols(Cols) :-
     get_option(4, 10, 'Enter number of columns', Cols).
@@ -125,7 +125,7 @@ get_valid_cols(Cols) :-
 /*
     parameters: Player
     return: Mode
-    this function get the mode from the console for the player
+    this predicate get the mode from the console for the player
 */
 get_valid_mode(1, Mode) :-
     get_option(1, 3, 'Select Player 1 (1. Player, 2. Bot(Easy), 3. Bot(Medium))', Mode).
@@ -136,7 +136,7 @@ get_valid_mode(2, Mode) :-
 /*
     parameters: none
     return: GameState, ModeP1, ModeP2
-    this function sets up the game by getting the number of rows, columns and the mode for the players. It initializes the game state and displays the game
+    this predicate sets up the game by getting the number of rows, columns and the mode for the players. It initializes the game state and displays the game
 */
 setup_game(GameState, ModeP1, ModeP2) :-
     write('Start Game'),nl,
@@ -156,7 +156,7 @@ setup_game(GameState, ModeP1, ModeP2) :-
 /*
     parameters: Coords;
     return: none
-    this function display a list of coordinates in the console
+    this predicate display a list of coordinates in the console
 */
 display_coords(Coords) :-
     write('Coordinates: '), nl,
@@ -165,7 +165,7 @@ display_coords(Coords) :-
 /*
     parameters: List of coordinates
     return: none
-    this function displays a coordinate from the list in the console by the usage of recursion
+    this predicate displays a coordinate from the list in the console by the usage of recursion
 */
 display_formatted_coords([]).
 display_formatted_coords([(Row, Col)|Rest]) :-
@@ -175,7 +175,7 @@ display_formatted_coords([(Row, Col)|Rest]) :-
 /*
     parameters: Board, RowLetters, ColNumbers
     return: none
-    this function displays the board in the console and the respective row letters and column numbers
+    this predicate displays the board in the console and the respective row letters and column numbers
 */
 display_board(Board, RowLetters, ColNumbers) :-
     nl,
@@ -187,7 +187,7 @@ display_board(Board, RowLetters, ColNumbers) :-
 /*
     parameters: List of column numbers
     return: none
-    this function displays the column numbers in the console by the usage of recursion
+    this predicate displays the column numbers in the console by the usage of recursion
 */
 display_col_numbers([]).
 display_col_numbers([Col|RestCols]) :-
@@ -197,7 +197,7 @@ display_col_numbers([Col|RestCols]) :-
 /*
     parameters: Board, RowLetters, RowIndex
     return: none
-    this function displays the rows of the board in the console by the usage of recursion
+    this predicate displays the rows of the board in the console by the usage of recursion
 */
 display_rows([], _, _).
 display_rows([Row|RestRows], RowLetters, RowIndex) :-
@@ -211,7 +211,7 @@ display_rows([Row|RestRows], RowLetters, RowIndex) :-
 /*
     parameters: Row
     return: none
-    this function displays a row in the console by the usage of recursion
+    this predicate displays a row in the console by the usage of recursion
 */
 display_row([]).
 display_row([Cell|RestCells]) :-
@@ -221,7 +221,7 @@ display_row([Cell|RestCells]) :-
 /*
     parameters: Cell
     return: none
-    this function displays a cell in the console
+    this predicate displays a cell in the console
 */
 display_cell(empty) :-
     write('. ').
@@ -231,7 +231,7 @@ display_cell(Cell) :-
 /*
     parameters: RowLetter, Rows
     return: none
-    this function validates if the row letter is within the possible range
+    this predicate validates if the row letter is within the possible range
 */
 validate_row_letter(RowLetter, Rows) :-
     char_code(RowLetter, RowCode),
@@ -243,7 +243,7 @@ validate_row_letter(RowLetter, Rows) :-
 /*
     parameters: ColNumber, Cols
     return: none
-    this function validates if the column number is within the possible range
+    this predicate validates if the column number is within the possible range
 */
 validate_col_number(ColNumber, Cols) :-
     between(1, Cols, ColNumber).
@@ -251,7 +251,7 @@ validate_col_number(ColNumber, Cols) :-
 /*
     parameters: Player, GameState, Char
     return: coords
-    this function reads the user input from the console and validates it
+    this predicate reads the user input from the console and validates it
 */
 read_user_input(Player, game_state(Turn, Player1Score, Player2Score, Board1, RowLetters1, ColNumbers1, Board2, RowLetters2, ColNumbers2, Mode, Rows, Cols), Char, (A1, B1)) :-
     format('Player ~w\'s turn', [Player]), nl,
@@ -271,7 +271,7 @@ read_user_input(Player, game_state(Turn, Player1Score, Player2Score, Board1, Row
 /*
     parameters: Coordinates, GameState
     return: none
-    this function validate if the move is possible based on the coordinates 
+    this predicate validate if the move is possible based on the coordinates 
 */
 validate_move((A1, B1), game_state(_, _, _, Board1, RowLetters1, ColNumbers1, _, _, _, _, _, _)) :-
     nth1(RowIndex, RowLetters1, A1),
@@ -282,7 +282,7 @@ validate_move((A1, B1), game_state(_, _, _, Board1, RowLetters1, ColNumbers1, _,
 /*
     parameters: none
     return: Option
-    this function reads the option from the console and validates it if the user wants to play again or exit
+    this predicate reads the option from the console and validates it if the user wants to play again or exit
 */
 retry_game(Option):-
     get_option(1, 2, '1- Replay  2- Exit', Option).

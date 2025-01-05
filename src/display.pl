@@ -120,7 +120,7 @@ get_valid_rows(Rows) :-
     this predicate get the number of columns from the console
 */
 get_valid_cols(Cols) :-
-    get_option(4, 10, 'Enter number of columns', Cols).
+    get_option(4, 9, 'Enter number of columns', Cols).
 
 /*
     parameters: Player

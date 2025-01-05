@@ -154,48 +154,48 @@ change_score(game_state(Turn, Player1Score, Player2Score, Board1, RowLetters1, C
 
 /*
     parameters: state of the game(setup)
-    returns: new game state
+    returns: none
     this predicate is used to setup the game state and then start the game with player 1's turn
 */
-run_state(setup, GameState) :-
+run_state(setup) :-
     setup_game(GameState, ModeP1, ModeP2),
     run_state(player1_turn, ModeP1, ModeP2, GameState).
 
 /*
     parameters: state of the game(game over), winner(draw)
     returns: none
-    this predicate is used to display the end of the game, in this case a draw, and then ask the user if they want to retry the game
+    this predicate is used to display the end of the game, in this case a draw, and then ask the user if they want to replay the game
 */
 run_state(game_over, 0) :-
     write('Game over! Its a Draw!'), nl,
-    retry_game(Option),
-    run_state(retry_game, Option).
+    replay_game(Option),
+    run_state(replay_game, Option).
 
 
 /*
     parameters: state of the game(game over), winner(player)
     returns: none
-    this predicate is used to display the end of the game, in this case a player has won, and then ask the user if they want to retry the game
+    this predicate is used to display the end of the game, in this case a player has won, and then ask the user if they want to replay the game
 */
 run_state(game_over, Winner) :-
     format('Game over! Winner: Player ~w~n', [Winner]),
-    retry_game(Option),
-    run_state(retry_game, Option).
+    replay_game(Option),
+    run_state(replay_game, Option).
 
 /*
-    parameters: state of the game(retry game), option to retry the game
+    parameters: state of the game(replay game), option to replay the game
     returns: none
-    this predicate is used to ask the user if they want to retry the game
+    this predicate is used to ask the user if they want to replay the game
 */
-run_state(retry_game, 1) :-
-    run_state(setup, _).
+run_state(replay_game, 1) :-
+    run_state(setup).
 
 /*
-    parameters: state of the game(retry game), option to retry the game
+    parameters: state of the game(replay game), option to replay the game
     returns: none
     this predicate is used to end the game
 */
-run_state(retry_game, 2) :-
+run_state(replay_game, 2) :-
     write('End of the Game'), nl.
 
 /*
@@ -342,7 +342,7 @@ handle_player2_o_outcome(GameState, ModeP1, ModeP2) :-
     this predicate is used to start the game
 */
 play :-
-    run_state(setup, _).
+    run_state(setup).
 
 /*
     parameters: cords of the move, List of moves

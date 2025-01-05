@@ -283,5 +283,5 @@ validate_move((A1, B1), game_state(_, _, _, Board1, RowLetters1, ColNumbers1, _,
     return: Option
     this predicate reads the option from the console and validates it if the user wants to play again or exit
 */
-retry_game(Option):-
+replay_game(Option):-
     get_option(1, 2, '1- Replay  2- Exit', Option).

@@ -70,35 +70,35 @@ value(game_state(_, Player1Score, Player2Score, _, _, _, _, _, _, _, _, _), 1, V
 value(game_state(_, Player1Score, Player2Score, _, _, _, _, _, _, _, _, _), 2, Value) :-
     Value is Player1Score - Player2Score.
 
-
+/*
+    Example game state for a draw
+    Test:
+        example_game_state(GameState), run_state(player1_turn, 3, 3, GameState).
+*/
 example_game_state(GameState) :-
     Board1 = [
-        [x, x, empty, empty, x, empty],
-        [x, x, empty, empty, empty, empty],
-        [x, x, o, o, empty, empty],
-        [empty, x, empty, x, empty, empty],
-        [x, empty, empty, empty, x, empty],
-        [empty, empty, empty, empty, empty, empty]
+        [o, x, x, o],
+        [x, x, x, x],
+        [o, o, o, empty],
+        [o, x, o, o]
     ],
-    RowLetters1 = ['A', 'B', 'C', 'D', 'E', 'F'],
-    ColNumbers1 = [1, 2, 3, 4, 5, 6],
+    RowLetters1 = ['B', 'A', 'D', 'C'],
+    ColNumbers1 = [3, 4, 1, 2],
     Board2 = [
-        [empty, empty, empty, empty, empty, empty],
-        [empty, empty, empty, empty, empty, empty],
-        [empty, empty, empty, empty, empty, empty],
-        [empty, empty, empty, empty, empty, empty],
-        [empty, empty, empty, empty, empty, empty],
-        [empty, empty, empty, empty, empty, empty]
+        [x, x, x, x],
+        [o, empty, o, o],
+        [o, o, o, x],
+        [o, o, x, x]
     ],
-    RowLetters2 = ['A', 'B', 'C', 'D', 'E', 'F'],
-    ColNumbers2 = [1, 2, 3, 4, 5, 6],
-    Mode = 'medium',  % Example game mode
-    Rows = 6,
-    Cols = 6,
+    RowLetters2 = ['A', 'D', 'C', 'B'],
+    ColNumbers2 = [3, 2, 1, 4],
+    Mode = 33,  % Medium bot vs Medium bot
+    Rows = 4,
+    Cols = 4,
     GameState = game_state(
         1,              % Current player
-        3,              % Player1 score
-        0,              % Player2 score
+        2,              % Player1 score
+        2,              % Player2 score
         Board1,         % Player1 board
         RowLetters1,    % Player1 row labels
         ColNumbers1,    % Player1 column numbers

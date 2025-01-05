@@ -288,6 +288,13 @@ check_square(Board, Total_Points, X, Y, Char, Next_Total_Points) :-
 
 check_square(_, Total_Points, _, _, _, Total_Points).
 
+/*
+    Board for testing the score
+    Tests:
+        sample_board(Board), check_all_score(Board, 0, 2, 2, x, Points).
+        sample_board(Board), check_all_horizontal(Board, 0, 2, 2, x, Points).
+        sample_board(Board), check_all_score(Board, 0, 5, 5, x, Points).
+*/
 sample_board([
     [x, x, x, o, x, o],
     [x, x, x, o, x, o],

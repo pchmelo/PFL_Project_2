@@ -162,6 +162,43 @@ run_state(setup, GameState) :-
     run_state(player1_turn, ModeP1, ModeP2, GameState).
 
 /*
+    parameters: state of the game(game over), winner(draw)
+    returns: none
+    this predicate is used to display the end of the game, in this case a draw, and then ask the user if they want to retry the game
+*/
+run_state(game_over, 0) :-
+    write('Game over! Its a Draw!'), nl,
+    retry_game(Option),
+    run_state(retry_game, Option).
+
+
+/*
+    parameters: state of the game(game over), winner(player)
+    returns: none
+    this predicate is used to display the end of the game, in this case a player has won, and then ask the user if they want to retry the game
+*/
+run_state(game_over, Winner) :-
+    format('Game over! Winner: Player ~w~n', [Winner]),
+    retry_game(Option),
+    run_state(retry_game, Option).
+
+/*
+    parameters: state of the game(retry game), option to retry the game
+    returns: none
+    this predicate is used to ask the user if they want to retry the game
+*/
+run_state(retry_game, 1) :-
+    run_state(setup, _).
+
+/*
+    parameters: state of the game(retry game), option to retry the game
+    returns: none
+    this predicate is used to end the game
+*/
+run_state(retry_game, 2) :-
+    write('End of the Game'), nl.
+
+/*
     parameters: state of the game(player 1's turn), player 1's mode, player 2's mode
     returns: new game state
     this predicate is used to handle player 1's turn and then check if the game is over or continue with player 2's turn
@@ -169,6 +206,15 @@ run_state(setup, GameState) :-
 run_state(player1_turn, ModeP1, ModeP2, GameState) :-
     make_player1_move_x(GameState, ModeP1, NewGameStateXScored),
     handle_player1_x_outcome(NewGameStateXScored, ModeP1, ModeP2).
+
+/*
+    parameters: state of the game(player 2's turn), player 1's mode, player 2's mode
+    returns: new game state
+    this predicate is used to handle player 2's turn and then check if the game is over or continue with player 1's turn
+*/
+run_state(player2_turn, ModeP1, ModeP2, GameState) :-
+    make_player2_move_x(GameState, ModeP2, NewGameStateXScored),
+    handle_player2_x_outcome(NewGameStateXScored, ModeP1, ModeP2).
 
 /*  
     parameters: state of the game(player 1's turn), player 1's mode
@@ -186,7 +232,7 @@ make_player1_move_x(GameState, ModeP1, NewGameStateXScored) :-
     returns: none
     this predicate is used to check if the game is over and then call the game over state after the first move made by player 1
 */
-handle_player1_x_outcome(GameState, ModeP1, ModeP2) :-
+handle_player1_x_outcome(GameState, _, _) :-
     game_over(GameState, Winner),
     run_state(game_over, Winner).
 
@@ -217,7 +263,7 @@ make_player1_move_o(GameState, ModeP1, NewGameStateOScored) :-
     returns: none
     this predicate is used to check if the game is over and then call the game over state after the second move made by player 1
 */
-handle_player1_o_outcome(GameState, ModeP1, ModeP2) :-
+handle_player1_o_outcome(GameState, _, _) :-
     game_over(GameState, Winner),
     run_state(game_over, Winner).
 
@@ -229,15 +275,6 @@ handle_player1_o_outcome(GameState, ModeP1, ModeP2) :-
 handle_player1_o_outcome(GameState, ModeP1, ModeP2) :-
     \+ game_over(GameState, _),
     run_state(player2_turn, ModeP1, ModeP2, GameState).
-
-/*
-    parameters: state of the game(player 2's turn), player 1's mode, player 2's mode
-    returns: new game state
-    this predicate is used to handle player 2's turn and then check if the game is over or continue with player 1's turn
-*/
-run_state(player2_turn, ModeP1, ModeP2, GameState) :-
-    make_player2_move_x(GameState, ModeP2, NewGameStateXScored),
-    handle_player2_x_outcome(NewGameStateXScored, ModeP1, ModeP2).
 
 /*  
     parameters: state of the game(player 2's turn), player 1's mode
@@ -255,7 +292,7 @@ make_player2_move_x(GameState, ModeP2, NewGameStateXScored) :-
     returns: none
     this predicate is used to check if the game is over and then call the game over state after the first move made by player 2
 */
-handle_player2_x_outcome(GameState, ModeP1, ModeP2) :-
+handle_player2_x_outcome(GameState, _, _) :-
     game_over(GameState, Winner),
     run_state(game_over, Winner).
 
@@ -286,7 +323,7 @@ make_player2_move_o(GameState, ModeP2, NewGameStateOScored) :-
     returns: none
     this predicate is used to check if the game is over and then call the game over state after the second move made by player 2
 */
-handle_player2_o_outcome(GameState, ModeP1, ModeP2) :-
+handle_player2_o_outcome(GameState, _, _) :-
     game_over(GameState, Winner),
     run_state(game_over, Winner).
 
@@ -300,59 +337,22 @@ handle_player2_o_outcome(GameState, ModeP1, ModeP2) :-
     run_state(player1_turn, ModeP1, ModeP2, GameState).
 
 /*
-    parameters: state of the game(game over), winner(draw)
-    returns: none
-    this predicate is used to display the end of the game, in this case a draw, and then ask the user if they want to retry the game
-*/
-run_state(game_over, 0) :-
-    write('Game over! Its a Draw!'), nl,
-    retry_game(Option),
-    run_state(retry_game, Option).
-
-
-/*
-    parameters: state of the game(game over), winner(player)
-    returns: none
-    this predicate is used to display the end of the game, in this case a player has won, and then ask the user if they want to retry the game
-*/
-run_state(game_over, Winner) :-
-    format('Game over! Winner: Player ~w~n', [Winner]),
-    retry_game(Option),
-    run_state(retry_game, Option).
-
-/*
-    parameters: state of the game(retry game), option to retry the game
-    returns: none
-    this predicate is used to ask the user if they want to retry the game
-*/
-run_state(retry_game, 1) :-
-    run_state(setup, GameState).
-
-/*
-    parameters: state of the game(retry game), option to retry the game
-    returns: none
-    this predicate is used to end the game
-*/
-run_state(retry_game, 2) :-
-    write('End of the Game'), nl.
-
-/*
     parameters: none
     returns: none
     this predicate is used to start the game
 */
 play :-
-    run_state(setup, GameState).
+    run_state(setup, _).
 
 /*
     parameters: cords of the move, List of moves
     returns: Result
     this predicate use recursion to check if the move is in the list of valid moves, return 1 if it is and 0 if it is not
 */
-is_a_valid_move((Row, Col), [(Row, Col) | Tail], 1).
+is_a_valid_move((Row, Col), [(Row, Col) | _], 1).
 is_a_valid_move((_, _), [], 0).
 
-is_a_valid_move((Row, Col), [(A, B) | Tail], Result):-
+is_a_valid_move((Row, Col), [(_, _) | Tail], Result):-
     is_a_valid_move((Row, Col), Tail, Result).
 
 /*
@@ -405,7 +405,7 @@ move(game_state(Turn, Player1Score, Player2Score, Board1, RowLetters1, ColNumber
     returns: Winner(0 - draw, 1 - player 1, 2 - player 2)
     this predicate is used to check if the game is over based on the number of empty spaces in the board
 */
-game_over(game_state(Turn, Score1, Score2, Board1, Rows1, Cols1, Board2, Rows2, Cols2, Mode, Rows, Cols), Winner) :-
+game_over(game_state(_, Score1, Score2, Board1, _, _, _, _, _, _, _, _), Winner) :-
     find_empty_spaces(Board1, EmptySpaces),
     length(EmptySpaces, 0),
     find_winner(Score1, Score2, Winner).

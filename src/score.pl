@@ -237,6 +237,20 @@ check_square_range(Board, Total_Points, X, Y, Char, OffsetX, OffsetY, Next_Total
 
 /*
     parameters: Board, Total_Points, X, Y, Char, OffsetX, OffsetY
+    returns: Total_Points
+    Base case for the recursion. If OffsetX is 1, it returns the current total points.
+*/
+check_square_range(_, Total_Points, _, _, _, 1, _, Total_Points).
+
+/*
+    parameters: Board, Total_Points, X, Y, Char, OffsetX, OffsetY
+    returns: Total_Points
+    Base case for the recursion. If OffsetY is 1, it returns the current total points.
+*/
+check_square_range(_, Total_Points, _, _, _, _, 1, Total_Points).
+
+/*
+    parameters: Board, Total_Points, X, Y, Char, OffsetX, OffsetY
     returns: Next_Total_Points
     This predicate handles the iteration through the Y offsets. If OffsetY is less than or equal to 0, it continues checking squares in the current X offset.
 */
@@ -253,20 +267,6 @@ check_square_range_y(Board, Total_Points, X, Y, Char, OffsetX, OffsetY, Next_Tot
     OffsetY > 0,
     Next_OffsetX is OffsetX + 1,
     check_square_range(Board, Total_Points, X, Y, Char, Next_OffsetX, -1, Next_Total_Points).
-
-/*
-    parameters: Board, Total_Points, X, Y, Char, OffsetX, OffsetY
-    returns: Total_Points
-    Base case for the recursion. If OffsetX is 1, it returns the current total points.
-*/
-check_square_range(_, Total_Points, _, _, _, 1, _, Total_Points).
-
-/*
-    parameters: Board, Total_Points, X, Y, Char, OffsetX, OffsetY
-    returns: Total_Points
-    Base case for the recursion. If OffsetY is 1, it returns the current total points.
-*/
-check_square_range(_, Total_Points, _, _, _, _, 1, Total_Points).
 
 /*
     parameters: Board, Total_Points, X, Y, Char
